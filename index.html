@@ -51,6 +51,23 @@
   .streak-num { font-size: 32px; font-weight: 900; color: #ff6b6b; }
   .streak-label { color: #8892b0; font-size: 13px; }
 
+  .calendar-grid {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin: 0 0 20px;
+    justify-content: flex-start;
+  }
+  .calendar-day {
+    width: 14px; height: 14px; border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    transition: all 0.2s;
+  }
+  .calendar-day.done { background: #00b894; }
+  .calendar-day.today { border: 2px solid #feca57; }
+  .calendar-label {
+    color: #8892b0; font-size: 11px; margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+  }
+
   .subjects { display: flex; flex-direction: column; gap: 12px; }
   .subject-card {
     display: flex; align-items: center; gap: 14px;
@@ -158,7 +175,7 @@
     font-size: 17px; font-weight: 700; margin-bottom: 10px;
   }
   .feedback.correct-fb .feedback-header { color: #00b894; }
-  .feedback.wrong-fb .feedback-header { color: #ff6b6b; }
+  .feedback.wrong-fb .feedback-header { color: #feca57; }
   .feedback-body { color: #a8b2d1; font-size: 14px; line-height: 1.7; }
 
   .next-btn {
@@ -424,6 +441,111 @@
     transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,184,148,0.3);
   }
   .export-btn:active { transform: scale(0.95); opacity: 0.9; }
+
+  /* ===== PREVIEW MODAL ===== */
+  .preview-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 150;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.3s;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .preview-card {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 28px 24px;
+    width: 90%; max-width: 360px; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .preview-title {
+    font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px;
+  }
+  .preview-subtitle { color: #8892b0; font-size: 13px; margin-bottom: 20px; }
+  .preview-topic-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+  .preview-topic-tag {
+    padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.08); color: #ccd6f6;
+  }
+  .preview-topic-tag.math { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+  .preview-topic-tag.chinese { background: rgba(72,219,251,0.15); color: #48dbfb; }
+  .preview-topic-tag.english { background: rgba(254,202,87,0.15); color: #feca57; }
+  .preview-go-btn {
+    width: 100%; padding: 16px; font-size: 18px; font-weight: 800;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: #fff; border: none; border-radius: 14px; cursor: pointer;
+    box-shadow: 0 8px 30px rgba(255,107,107,0.3);
+  }
+  .preview-go-btn:active { transform: scale(0.96); }
+  .preview-skip {
+    margin-top: 12px; background: none; border: none; color: #8892b0;
+    font-size: 13px; cursor: pointer;
+  }
+
+  /* ===== SUMMARY CARDS ===== */
+  .summary-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 160;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.3s;
+  }
+  .summary-card {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 32px 24px;
+    width: 90%; max-width: 360px; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+  }
+  .summary-icon { font-size: 56px; margin-bottom: 8px; }
+  .summary-topic { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .summary-tip {
+    font-size: 15px; color: #feca57; line-height: 1.7; margin-bottom: 20px;
+    background: rgba(254,202,87,0.08); padding: 14px; border-radius: 12px;
+  }
+  .summary-progress { margin-bottom: 20px; }
+  .summary-pager { color: #8892b0; font-size: 12px; margin-bottom: 12px; }
+  .summary-next-btn {
+    width: 100%; padding: 16px; font-size: 16px; font-weight: 800;
+    background: linear-gradient(135deg, #48dbfb, #0abde3);
+    color: #1a1a2e; border: none; border-radius: 14px; cursor: pointer;
+  }
+  .summary-next-btn:active { transform: scale(0.96); }
+
+  /* ===== LEVEL SYSTEM ===== */
+  .level-card {
+    margin: 0 0 20px;
+    background: linear-gradient(135deg, rgba(72,219,251,0.1), rgba(10,189,227,0.05));
+    border: 1px solid rgba(72,219,251,0.2);
+    border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+  }
+  .level-badge { font-size: 36px; }
+  .level-info { flex: 1; }
+  .level-name { color: #fff; font-size: 16px; font-weight: 700; }
+  .level-bar-outer { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .level-bar-inner { height: 100%; background: linear-gradient(90deg, #48dbfb, #feca57); border-radius: 3px; transition: width 0.5s; }
+  .level-xp { color: #8892b0; font-size: 11px; margin-top: 4px; }
+
+  /* ===== DAILY MISSION ===== */
+  .daily-mission {
+    margin: 0 0 20px;
+    background: linear-gradient(135deg, rgba(255,159,67,0.12), rgba(254,202,87,0.06));
+    border: 1px solid rgba(255,159,67,0.25);
+    border-radius: 16px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .daily-mission-icon { font-size: 28px; }
+  .daily-mission-info { flex: 1; }
+  .daily-mission-title { color: #feca57; font-size: 13px; font-weight: 700; }
+  .daily-mission-desc { color: #ccd6f6; font-size: 14px; margin-top: 2px; }
+  .daily-mission-reward { color: #ff9f43; font-size: 13px; font-weight: 600; }
+  .daily-mission-status {
+    padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    background: rgba(0,184,148,0.15); color: #00b894;
+  }
+  .daily-mission-status.done { background: rgba(0,184,148,0.2); color: #00b894; }
 </style>
 <script src="question-bank.js"></script>
 </head>
@@ -448,6 +570,28 @@
         <div class="streak-num" id="todayStreak">0 天</div>
         <div class="streak-label">连续打卡</div>
       </div>
+    </div>
+
+    <div class="calendar-label" id="calendarLabel"></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <div class="level-card" id="levelCard">
+      <div class="level-badge" id="levelBadge">🥉</div>
+      <div class="level-info">
+        <div class="level-name" id="levelName">青铜 · 新手学徒</div>
+        <div class="level-bar-outer"><div class="level-bar-inner" id="levelBar" style="width:0%"></div></div>
+        <div class="level-xp" id="levelXp">0 / 100 经验值</div>
+      </div>
+    </div>
+
+    <div class="daily-mission" id="dailyMission" style="display:none;">
+      <div class="daily-mission-icon">🎯</div>
+      <div class="daily-mission-info">
+        <div class="daily-mission-title" id="missionTitle">今日挑战</div>
+        <div class="daily-mission-desc" id="missionDesc"></div>
+      </div>
+      <div class="daily-mission-reward" id="missionReward"></div>
+      <div class="daily-mission-status" id="missionStatus"></div>
     </div>
 
     <div class="subjects">
@@ -503,6 +647,10 @@
     </div>
 
     <div id="mistakeBookList"></div>
+
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button class="nav-btn" id="exportMistakeCardBtn" style="flex:1;background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;border:none;font-weight:700;">📸 生成学习卡片</button>
+    </div>
 
     <div class="nav-row" style="margin-top:10px;">
       <button class="nav-btn primary" id="startMistakeFromBookBtn" style="background:linear-gradient(135deg,#feca57,#ff9f43);color:#1a1a2e;font-weight:800;">🔁 练习这些错题</button>
@@ -570,6 +718,8 @@
 
 <div class="particles" id="particlesContainer"></div>
 <div class="toast" id="toast"></div>
+<div id="previewOverlay" style="display:none;"></div>
+<div id="summaryOverlay" style="display:none;"></div>
 
 <script>
 // ===== QUESTION BANK =====
@@ -634,6 +784,256 @@ function refreshMistakeBadge() {
   }
 }
 
+// ===== CALENDAR =====
+function renderCalendar() {
+  const records = loadAllRecords();
+  const today = new Date();
+  const daySet = new Set(records.map(r => {
+    const d = new Date(r.timestamp);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }));
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  // Show last 70 days
+  const days = [];
+  for (let i = 69; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    days.push({ key, isToday: key === todayStr, done: daySet.has(key) });
+  }
+
+  // Count streak
+  let streak = 0;
+  for (let i = days.length - 1; i >= 0; i--) {
+    if (days[i].done) streak++;
+    else if (!days[i].isToday) break;
+  }
+  document.getElementById('todayStreak').innerHTML = `${streak} <span style="font-size:16px">天</span>`;
+
+  // Label
+  const totalDays = daySet.size;
+  document.getElementById('calendarLabel').innerHTML = `<span>📅 近70天学习记录</span><span style="color:#00b894">${totalDays}天</span>`;
+
+  // Render grid
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = days.map(d => {
+    let cls = 'calendar-day';
+    if (d.done) cls += ' done';
+    if (d.isToday) cls += ' today';
+    return `<div class="${cls}" title="${d.key}"></div>`;
+  }).join('');
+}
+
+// ===== LEVEL / XP SYSTEM =====
+const XP_KEY = 'daily_quiz_xp';
+const LEVELS = [
+  { name: '青铜 · 新手学徒', icon: '🥉', min: 0 },
+  { name: '白银 · 入门选手', icon: '🥈', min: 100 },
+  { name: '黄金 · 实力新星', icon: '🥇', min: 300 },
+  { name: '铂金 · 进阶达人', icon: '💎', min: 600 },
+  { name: '钻石 · 学霸之路', icon: '👑', min: 1000 },
+  { name: '王者 · 知识大师', icon: '🏆', min: 2000 },
+];
+
+function getXp() {
+  try { return parseInt(localStorage.getItem(XP_KEY)) || 0; } catch(e) { return 0; }
+}
+function addXp(amount) {
+  const cur = getXp();
+  const oldLevel = getLevel(cur);
+  const newVal = cur + amount;
+  localStorage.setItem(XP_KEY, String(newVal));
+  const newLevel = getLevel(newVal);
+  if (newLevel !== oldLevel) {
+    setTimeout(() => {
+      showOverlayMsg(`🎉 升级！${LEVELS[newLevel].icon} ${LEVELS[newLevel].name}`);
+      spawnParticles(window.innerWidth/2, window.innerHeight/2, 25, '🎉');
+    }, 500);
+  }
+  return newVal;
+}
+function getLevel(xp) {
+  let lvl = 0;
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (xp >= LEVELS[i].min) { lvl = i; break; }
+  }
+  return lvl;
+}
+function renderLevel() {
+  const xp = getXp();
+  const lvl = getLevel(xp);
+  const cur = LEVELS[lvl];
+  const next = LEVELS[lvl + 1];
+  const progress = next ? Math.round(((xp - cur.min) / (next.min - cur.min)) * 100) : 100;
+  document.getElementById('levelBadge').textContent = cur.icon;
+  document.getElementById('levelName').textContent = cur.name;
+  document.getElementById('levelBar').style.width = progress + '%';
+  if (next) {
+    document.getElementById('levelXp').textContent = `${xp - cur.min} / ${next.min - cur.min} 经验值`;
+  } else {
+    document.getElementById('levelXp').textContent = `${xp} 经验值 · 已达最高等级！`;
+  }
+}
+
+// ===== DAILY MISSION =====
+const MISSION_KEY = 'daily_mission';
+const MISSIONS = [
+  { id: 'streak3', desc: '连续答对 3 道题', icon: '🔥', reward: '+20 XP', xp: 20, check: (session) => session.maxCombo >= 3 },
+  { id: 'correct10', desc: '本次闯关答对 10 题以上', icon: '🎯', reward: '+30 XP', xp: 30, check: (session) => session.score >= 10 },
+  { id: 'speed5', desc: '5 秒内答对一道题', icon: '⚡', reward: '+15 XP', xp: 15, check: (session) => session.fastestCorrect <= 5000 },
+  { id: 'perfect', desc: '全部答对（100%正确率）', icon: '💯', reward: '+50 XP', xp: 50, check: (session) => session.score === session.total },
+  { id: 'allsub', desc: '三科各答对至少 1 题', icon: '🎨', reward: '+25 XP', xp: 25, check: (session) => {
+    const ok = new Set(session.subjCorrect.filter(s => s.correct > 0).map(s => s.subject));
+    return ok.size >= 3;
+  }},
+];
+
+function getTodayMission() {
+  const today = new Date().toDateString();
+  try {
+    const stored = JSON.parse(localStorage.getItem(MISSION_KEY));
+    if (stored && stored.date === today) return stored;
+  } catch(e) {}
+  // Generate new mission
+  const idx = Math.floor(Math.random() * MISSIONS.length);
+  const mission = { date: today, mission: MISSIONS[idx].id, completed: false };
+  localStorage.setItem(MISSION_KEY, JSON.stringify(mission));
+  return mission;
+}
+
+function renderDailyMission() {
+  const tm = getTodayMission();
+  const mdef = MISSIONS.find(m => m.id === tm.mission);
+  if (!mdef) return;
+  const el = document.getElementById('dailyMission');
+  el.style.display = 'flex';
+  document.getElementById('missionTitle').textContent = '今日挑战';
+  document.getElementById('missionDesc').textContent = `${mdef.icon} ${mdef.desc}`;
+  document.getElementById('missionReward').textContent = mdef.reward;
+  const statusEl = document.getElementById('missionStatus');
+  if (tm.completed) {
+    statusEl.textContent = '✅ 已完成';
+    statusEl.className = 'daily-mission-status done';
+    el.style.opacity = '0.7';
+  } else {
+    statusEl.textContent = '进行中';
+    statusEl.className = 'daily-mission-status';
+    el.style.opacity = '1';
+  }
+}
+
+function checkAndCompleteMission(sessionStats) {
+  const tm = getTodayMission();
+  if (tm.completed) return;
+  const mdef = MISSIONS.find(m => m.id === tm.mission);
+  if (!mdef) return;
+  if (mdef.check(sessionStats)) {
+    tm.completed = true;
+    localStorage.setItem(MISSION_KEY, JSON.stringify(tm));
+    addXp(mdef.xp);
+    renderLevel();
+    setTimeout(() => showToast(`🎉 完成今日挑战！+${mdef.xp} XP`, 3000), 1000);
+  }
+}
+
+function getSessionStats() {
+  let maxCombo = 0, curCombo = 0, fastestCorrect = Infinity;
+  const subjCorrect = [
+    { subject: 'math', correct: 0 },
+    { subject: 'chinese', correct: 0 },
+    { subject: 'english', correct: 0 },
+  ];
+  sessionRecords.forEach(r => {
+    if (r.isCorrect) {
+      curCombo++;
+      if (curCombo > maxCombo) maxCombo = curCombo;
+      if (r.timeSpent < fastestCorrect) fastestCorrect = r.timeSpent;
+      const sc = subjCorrect.find(s => s.subject === r.subject);
+      if (sc) sc.correct++;
+    } else { curCombo = 0; }
+  });
+  return { maxCombo, fastestCorrect: fastestCorrect === Infinity ? 99999 : fastestCorrect, score, total: totalQuestions, subjCorrect };
+}
+
+// ===== EXPORT MISTAKE CARD AS IMAGE =====
+function exportMistakeCard() {
+  const entries = getMistakeEntries().filter(e => !e.mastered);
+  if (entries.length === 0) {
+    showToast('🎉 没有待复习的错题！', 2000);
+    return;
+  }
+
+  // Build a card with Canvas
+  const canvas = document.createElement('canvas');
+  const w = 400, h = Math.min(600, 200 + entries.length * 28);
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, 0, h);
+  bg.addColorStop(0, '#1a1a2e'); bg.addColorStop(1, '#16213e');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+
+  // Title
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('📝 错题复习卡片', w/2, 40);
+
+  // Date
+  const today = new Date().toLocaleDateString('zh-CN');
+  ctx.fillStyle = '#8892b0'; ctx.font = '12px sans-serif';
+  ctx.fillText(today + ' · 共' + entries.length + '道待复习', w/2, 62);
+
+  // Separator
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(30, 75); ctx.lineTo(w-30, 75); ctx.stroke();
+
+  // List top 15 entries
+  const subjNames = { math:'数学', chinese:'语文', english:'英语' };
+  const subjColors = { math:'#ff6b6b', chinese:'#48dbfb', english:'#feca57' };
+  let y = 100;
+  const top = entries.slice(0, 15);
+  top.forEach((e, i) => {
+    const q = Q.questions.find(qq => qq.id === e.questionId);
+    const name = subjNames[e.subject] || e.subject;
+    const color = subjColors[e.subject] || '#fff';
+    ctx.fillStyle = color; ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${i+1}. [${name}] ${getTopicName(e.topic)}`, 30, y);
+    ctx.fillStyle = '#ff6b6b'; ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`答错${e.wrongCount}次`, w-30, y);
+    y += 24;
+  });
+
+  // Footer
+  ctx.fillStyle = '#8892b0'; ctx.font = '11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('每日闯关 · 学习小助手', w/2, h - 20);
+
+  // Download
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `错题卡片_${today.replace(/\//g, '-')}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ 学习卡片已下载，可分享给皓祤哥', 2500);
+  }, 'image/png');
+}
+
+function awardXpForQuiz() {
+  // Base: 10 per correct answer, + combo bonus
+  let earned = score * 10;
+  if (combo >= 10) earned += 50;
+  else if (combo >= 5) earned += 20;
+  else if (combo >= 3) earned += 10;
+  addXp(earned);
+  renderLevel();
+  return earned;
+}
+
 // ===== COMBO BAR =====
 function updateComboBar() {
   if (combo >= 2) {
@@ -663,6 +1063,43 @@ function spawnParticles(x, y, count, emoji) {
     $particles.appendChild(p);
     setTimeout(() => p.remove(), 1000);
   }
+}
+
+// ===== SOUND EFFECTS =====
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  return audioCtx;
+}
+function playComboSound(level) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    const freq = level >= 10 ? 880 : level >= 5 ? 660 : 523;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.setValueAtTime(freq * 1.5, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.3);
+  } catch(e) { /* silent fail */ }
+}
+
+// Overlay message
+let overlayMsgTimer = null;
+function showOverlayMsg(text) {
+  let el = document.querySelector('.overlay-msg');
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'overlay-msg';
+    document.body.appendChild(el);
+  }
+  el.textContent = text;
+  el.className = 'overlay-msg show';
+  clearTimeout(overlayMsgTimer);
+  overlayMsgTimer = setTimeout(() => { el.classList.remove('show'); }, 1500);
 }
 
 // ===== ANSWER RECORDING =====
@@ -726,6 +1163,47 @@ function showToast(msg, duration) {
   toast.classList.add('show');
   clearTimeout(toast._timeout);
   toast._timeout = setTimeout(() => toast.classList.remove('show'), duration || 2500);
+}
+
+// ===== TOPIC PREVIEW =====
+function showTopicPreview(subject, onStart) {
+  // Get the topics that will appear in this quiz
+  let questions;
+  if (subject === 'all') {
+    questions = [...buildQuestionSet('math'), ...buildQuestionSet('chinese'), ...buildQuestionSet('english')];
+  } else {
+    questions = buildQuestionSet(subject);
+  }
+  const topicKeys = [...new Set(questions.map(q => q.topic))];
+  const subjClass = { math: 'math', chinese: 'chinese', english: 'english' };
+
+  const tagsHTML = topicKeys.map(tk => {
+    const topic = Q.topics[tk];
+    const sc = topic ? topic.subject : 'math';
+    return `<span class="preview-topic-tag ${subjClass[sc] || ''}">${getTopicName(tk)}</span>`;
+  }).join('');
+
+  const overlay = document.getElementById('previewOverlay');
+  overlay.innerHTML = `
+    <div class="preview-overlay" id="previewInner">
+      <div class="preview-card">
+        <div class="preview-title">🚀 今日闯关挑战</div>
+        <div class="preview-subtitle">今天要挑战 ${topicKeys.length} 个知识点，共 ${questions.length} 题</div>
+        <div class="preview-topic-list">${tagsHTML}</div>
+        <button class="preview-go-btn" id="previewGoBtn">开始挑战！</button>
+        <button class="preview-skip" id="previewSkipBtn">改天再说</button>
+      </div>
+    </div>`;
+  overlay.style.display = 'block';
+
+  document.getElementById('previewGoBtn').addEventListener('click', () => {
+    overlay.style.display = 'none';
+    onStart();
+  });
+  document.getElementById('previewSkipBtn').addEventListener('click', () => {
+    overlay.style.display = 'none';
+    showScreen($home);
+  });
 }
 
 // ===== EXPORT RECORDS =====
@@ -1165,7 +1643,41 @@ function startMistakeQuiz() {
 function buildQuestionSet(subject) {
   const pool = [...Q.questions.filter(q => q.subject === subject)];
   const shuffled = pool.sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, QUESTIONS_PER_SUBJECT);
+  let selected = shuffled.slice(0, QUESTIONS_PER_SUBJECT);
+
+  // Mix in 2-3 yesterday's mistakes (spaced repetition)
+  const yesterdayMistakes = getYesterdayMistakes(subject);
+  if (yesterdayMistakes.length > 0) {
+    const mixCount = Math.min(3, yesterdayMistakes.length, QUESTIONS_PER_SUBJECT - 1);
+    const mixIn = yesterdayMistakes.sort(() => Math.random() - 0.5).slice(0, mixCount);
+    // Replace last few questions with mistakes
+    selected = [...selected.slice(0, QUESTIONS_PER_SUBJECT - mixCount), ...mixIn];
+  }
+
+  return selected;
+}
+
+function getYesterdayMistakes(subject) {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yStart = new Date(yesterday); yStart.setHours(0,0,0,0);
+  const yEnd = new Date(yesterday); yEnd.setHours(23,59,59,999);
+
+  const records = loadAllRecords();
+  const yesterdayWrongIds = new Set(
+    records.filter(r => r.timestamp >= yStart.getTime() && r.timestamp <= yEnd.getTime() && !r.isCorrect)
+      .map(r => r.questionId)
+  );
+
+  // Also get any unmastered mistakes from earlier
+  const unmasteredIds = new Set(getMistakeQuestions(subject).map(e => e.questionId));
+
+  const allIds = new Set([...yesterdayWrongIds, ...unmasteredIds]);
+  // Remove mastered
+  const mastered = new Set(loadMasteredIds());
+  const finalIds = [...allIds].filter(id => !mastered.has(id));
+
+  return Q.questions.filter(q => finalIds.includes(q.id) && q.subject === subject);
 }
 
 function loadQuestion() {
@@ -1222,6 +1734,11 @@ function selectAnswer(idx, el) {
     el.classList.add('correct');
     userAnswers[q.id] = true;
 
+    // Sound + celebration for combos
+    if (combo === 3) { playComboSound(3); showOverlayMsg('🔥 连对3题！'); }
+    else if (combo === 5) { playComboSound(5); showOverlayMsg('⚡ 连对5题！'); spawnParticles(window.innerWidth/2, window.innerHeight/2, 20, '🎉'); }
+    else if (combo === 10) { playComboSound(10); showOverlayMsg('👑 十连击！'); spawnParticles(window.innerWidth/2, window.innerHeight/2, 30, '🏆'); }
+
     // Spawn celebration
     const rect = el.getBoundingClientRect();
     spawnParticles(rect.left + rect.width/2, rect.top, 12, '✨');
@@ -1235,7 +1752,7 @@ function selectAnswer(idx, el) {
     userAnswers[q.id] = false;
 
     $feedback.classList.add('show', 'wrong-fb');
-    $feedbackHeader.textContent = '❌ 还差一点！来看看解析：';
+    $feedbackHeader.textContent = '💡 又发现一个薄弱点！来看看解析：';
     $feedbackBody.textContent = q.explanation;
   }
 
@@ -1251,12 +1768,84 @@ function nextQuestion() {
 
 let isMistakeMode = false; // tracks if current quiz is from mistake pool
 
+// ===== SUMMARY CARDS =====
+const TOPIC_TIPS = {
+  'math-rational-add': '负数相加：同号相加，符号不变，绝对值相加。',
+  'math-rational-sub': '减去负数 = 加上正数。口诀：负负得正！',
+  'math-rational-mul': '两数相乘：同号得正，异号得负。',
+  'math-rational-div': '除以一个数 = 乘以它的倒数。',
+  'math-rational-abs': '绝对值永远是正数或0，表示"距离"。',
+  'math-rational-mix': '先乘除后加减，有括号先算括号。',
+  'math-integer-op': '同类项合并：系数相加，字母不变。',
+  'math-linear-eq': '解方程口诀：移项变号，最后系数化1。',
+  'math-power': '负数的偶次方为正，奇次方为负。',
+  'math-frac': '分数运算：通分后加减，约分到最简。',
+  'chinese-typo': '易错字多看多写，注意偏旁部首。',
+  'chinese-grammar': '病句：找主干，看搭配，查逻辑。',
+  'chinese-idiom': '成语要记完整的意思和使用场景。',
+  'chinese-poem': '古诗必背：先理解意思，再默写。',
+  'chinese-classical': '文言文实词要在句子中理解含义。',
+  'chinese-lit': '文学常识：记住作者+作品+朝代。',
+  'chinese-typo2': '进阶易错字：注意形近字辨析。',
+  'english-be': 'am/is/are 口诀：I用am，you用are，is连着他她它。',
+  'english-present': '一般现在时：主语三单，动词加s。',
+  'english-words': '背单词：每天5个，反复复习。',
+  'english-phonetic': '音标是单词的拼音，读准音标=读准单词。',
+  'english-article': 'a/an看发音不看字母！元音音素用an。',
+  'english-pronoun': '主格作主语，宾格作宾语，形代后跟名词。',
+  'english-prep': '方位介词：on接触表面，in在里面，under在下面。',
+  'english-can': 'can表能力，must表必须，mustn\'t表禁止。',
+  'english-present-cont': '现在进行时：be + 动词ing，now/Listen/Look是标志。',
+};
+
+function showSummaryCards(onDone) {
+  // Collect unique topics from this quiz
+  const topicKeys = [...new Set(currentQuestions.map(q => q.topic))];
+  if (topicKeys.length === 0) { onDone(); return; }
+
+  let cardIdx = 0;
+  const subjIcons = { math:'📐', chinese:'📖', english:'🌍' };
+  const subjClass = { math:'math', chinese:'chinese', english:'english' };
+
+  const overlay = document.getElementById('summaryOverlay');
+
+  function renderCard() {
+    if (cardIdx >= topicKeys.length) {
+      overlay.style.display = 'none';
+      onDone();
+      return;
+    }
+    const tk = topicKeys[cardIdx];
+    const topic = Q.topics[tk];
+    const tip = TOPIC_TIPS[tk] || '坚持练习，你一定能掌握这个知识点！';
+    const sc = topic ? topic.subject : 'math';
+    const icon = subjIcons[sc] || '📝';
+
+    overlay.innerHTML = `
+      <div class="summary-overlay">
+        <div class="summary-card">
+          <div class="summary-icon">${icon}</div>
+          <div class="summary-topic">${getTopicName(tk)}</div>
+          <div class="summary-tip">💡 ${tip}</div>
+          <div class="summary-pager">${cardIdx + 1} / ${topicKeys.length}</div>
+          <button class="summary-next-btn" id="summaryNextBtn">${cardIdx + 1 >= topicKeys.length ? '📊 查看成绩' : '下一张 →'}</button>
+        </div>
+      </div>`;
+    overlay.style.display = 'block';
+
+    document.getElementById('summaryNextBtn').addEventListener('click', () => {
+      cardIdx++;
+      renderCard();
+    });
+  }
+
+  renderCard();
+}
+
 // ===== RESULT =====
 function showResult() {
-  // Save all records from this session
   saveSessionRecords();
 
-  // If in mistake mode, mark correctly-answered previously-wrong questions as mastered
   if (isMistakeMode) {
     const wrongIds = new Set(getMistakeEntries().filter(e => !e.mastered).map(e => e.questionId));
     currentQuestions.forEach(q => {
@@ -1267,8 +1856,21 @@ function showResult() {
     isMistakeMode = false;
   }
 
+  // Show summary cards first, then result
+  showSummaryCards(() => {
+    _showResultScreen();
+  });
+}
+
+function _showResultScreen() {
   showScreen($result);
   $comboBar.classList.remove('visible');
+
+  // Award XP
+  const earnedXp = awardXpForQuiz();
+  // Check daily mission
+  const sessionStats = getSessionStats();
+  checkAndCompleteMission(sessionStats);
 
   const pct = Math.round((score / totalQuestions) * 100);
   const $icon = document.getElementById('resultIcon');
@@ -1291,6 +1893,7 @@ function showResult() {
   }
 
   $score.textContent = `${score}/${totalQuestions}`;
+  $label.innerHTML = `${$label.textContent}<br><span style="color:#feca57;font-size:14px;">+${earnedXp} 经验值</span>`;
 
   // Per-subject stats with actual correctness
   const subjStats = { math: { correct: 0, total: 0 }, chinese: { correct: 0, total: 0 }, english: { correct: 0, total: 0 } };
@@ -1320,6 +1923,13 @@ function showResult() {
 }
 
 function startQuiz(subject) {
+  // Show preview first
+  showTopicPreview(subject, () => {
+    _doStartQuiz(subject);
+  });
+}
+
+function _doStartQuiz(subject) {
   isMistakeMode = false;
   currentIndex = 0;
   score = 0;
@@ -1394,8 +2004,14 @@ document.querySelectorAll('#mistakeSubjectFilter .subject-filter-btn').forEach(b
 // Mistake practice
 document.getElementById('startMistakeBtn').addEventListener('click', () => startMistakeQuiz());
 
+// Mistake card export
+document.getElementById('exportMistakeCardBtn').addEventListener('click', exportMistakeCard);
+
 // ===== INIT: 动态更新题库计数和错题数 =====
 (function initHomeCounts() {
+  renderCalendar();
+  renderLevel();
+  renderDailyMission();
   const mathCount = getQuestionCount('math');
   const chineseCount = getQuestionCount('chinese');
   const englishCount = getQuestionCount('english');
