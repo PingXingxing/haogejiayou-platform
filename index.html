@@ -772,8 +772,8 @@ function showScreen(screen) {
   if (screen === $home) refreshMistakeBadge();
 }
 
-function refreshMistakeBadge() {
-  const pending = getMistakeQuestions('all').length;
+async function refreshMistakeBadge() {
+  const pending = (await getMistakeQuestions('all')).length;
   const mistakeBtn = document.getElementById('startMistakeBtn');
   if (pending > 0) {
     mistakeBtn.textContent = `🔁 错题重练 (${pending}道待复习)`;
@@ -785,8 +785,8 @@ function refreshMistakeBadge() {
 }
 
 // ===== CALENDAR =====
-function renderCalendar() {
-  const records = loadAllRecords();
+async function renderCalendar() {
+  const records = await loadAllRecords();
   const today = new Date();
   const daySet = new Set(records.map(r => {
     const d = new Date(r.timestamp);
@@ -1104,6 +1104,8 @@ function showOverlayMsg(text) {
 
 // ===== ANSWER RECORDING =====
 const STORAGE_KEY = 'daily_quiz_records';
+const API_BASE = window.location.origin;
+let cachedRecords = null; // in-memory cache
 
 function getTopicName(topicKey) {
   if (Q.topics && Q.topics[topicKey]) {
@@ -1130,25 +1132,54 @@ function recordAnswer(q, selectedIdx, isCorrect, timeSpent) {
 
 function saveSessionRecords() {
   if (sessionRecords.length === 0) return;
-  const existing = loadAllRecords();
+  const existing = loadAllRecordsSync();
   const all = existing.concat(sessionRecords);
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   } catch (e) {
-    // localStorage full — trim old records
     const trimmed = all.slice(-500);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
   }
+  // Also sync to server
+  syncRecordsToServer(sessionRecords);
+  // Update cache
+  if (cachedRecords) cachedRecords = all;
   sessionRecords = [];
 }
 
-function loadAllRecords() {
+function syncRecordsToServer(records) {
+  fetch(API_BASE + '/api/records', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ records: records })
+  }).catch(() => { /* silent fail, localStorage fallback works */ });
+}
+
+function loadAllRecordsSync() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
     return [];
   }
+}
+
+async function loadAllRecords() {
+  // Try server first, fall back to localStorage
+  if (cachedRecords) return cachedRecords;
+  try {
+    const resp = await fetch(API_BASE + '/api/records');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.length > 0) {
+        cachedRecords = data;
+        // Also update localStorage with server data
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+        return data;
+      }
+    }
+  } catch(e) { /* fall through to localStorage */ }
+  return loadAllRecordsSync();
 }
 
 function clearAllRecords() {
@@ -1207,8 +1238,8 @@ function showTopicPreview(subject, onStart) {
 }
 
 // ===== EXPORT RECORDS =====
-function exportRecords() {
-  const records = loadAllRecords();
+async function exportRecords() {
+  const records = await loadAllRecords();
   if (records.length === 0) {
     showToast('还没有答题记录，先去做一次闯关吧！', 2000);
     return;
@@ -1324,8 +1355,8 @@ function fallbackCopy(text) {
 
 
 // ===== ANALYSIS PAGE =====
-function renderAnalysis() {
-  const records = loadAllRecords();
+async function renderAnalysis() {
+  const records = await loadAllRecords();
   const total = records.length;
   const correct = records.filter(r => r.isCorrect).length;
   const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
@@ -1493,8 +1524,8 @@ function resetAllMastered() {
 
 // Get all wrong question entries grouped by questionId
 // Returns: [{questionId, subject, topic, wrongCount, totalCount, lastWrongTime, mastered}]
-function getMistakeEntries() {
-  const records = loadAllRecords();
+async function getMistakeEntries() {
+  const records = await loadAllRecords();
   const mastered = loadMasteredIds();
   const map = {};
 
@@ -1525,8 +1556,8 @@ function getMistakeEntries() {
 }
 
 // Get the actual question objects for mistake pool (not mastered only)
-function getMistakeQuestions(subjectFilter) {
-  const entries = getMistakeEntries().filter(e => !e.mastered);
+async function getMistakeQuestions(subjectFilter) {
+  const entries = (await getMistakeEntries()).filter(e => !e.mastered);
   if (subjectFilter && subjectFilter !== 'all') {
     return entries.filter(e => e.subject === subjectFilter);
   }
@@ -1536,9 +1567,9 @@ function getMistakeQuestions(subjectFilter) {
 // Render error book
 let currentMistakeFilter = 'all';
 
-function renderMistakeBook(filterSubject) {
+async function renderMistakeBook(filterSubject) {
   currentMistakeFilter = filterSubject || 'all';
-  const entries = getMistakeEntries();
+  const entries = await getMistakeEntries();
   const filtered = filterSubject === 'all' ? entries : entries.filter(e => e.subject === filterSubject);
   const unmastered = filtered.filter(e => !e.mastered);
 
@@ -1572,7 +1603,7 @@ function renderMistakeBook(filterSubject) {
 
     const wrongOpt = q.options[entry.questionId] !== undefined ? (() => {
       // Find the last wrong answer for this question
-      const records = loadAllRecords().filter(r => r.questionId === entry.questionId && !r.isCorrect);
+      const records = loadAllRecordsSync().filter(r => r.questionId === entry.questionId && !r.isCorrect);
       const lastWrong = records[records.length - 1];
       return lastWrong ? q.options[lastWrong.selectedAnswer] : '';
     })() : '';
@@ -1601,8 +1632,8 @@ function renderMistakeBook(filterSubject) {
 }
 
 // Start a quiz from mistake pool
-function startMistakeQuiz() {
-  const mistakeQs = getMistakeQuestions('all');
+async function startMistakeQuiz() {
+  const mistakeQs = await getMistakeQuestions('all');
   if (mistakeQs.length === 0) {
     alert('🎉 太棒了！没有待复习的错题！');
     return;
@@ -1663,18 +1694,25 @@ function getYesterdayMistakes(subject) {
   const yStart = new Date(yesterday); yStart.setHours(0,0,0,0);
   const yEnd = new Date(yesterday); yEnd.setHours(23,59,59,999);
 
-  const records = loadAllRecords();
+  const records = loadAllRecordsSync();
   const yesterdayWrongIds = new Set(
     records.filter(r => r.timestamp >= yStart.getTime() && r.timestamp <= yEnd.getTime() && !r.isCorrect)
       .map(r => r.questionId)
   );
 
-  // Also get any unmastered mistakes from earlier
-  const unmasteredIds = new Set(getMistakeQuestions(subject).map(e => e.questionId));
+  // Also get any unmastered mistakes from earlier (use sync)
+  const allRecords = loadAllRecordsSync();
+  const mastered = new Set(loadMasteredIds());
+  const map = {};
+  allRecords.forEach(r => {
+    if (!map[r.questionId]) map[r.questionId] = { wrong: 0, mastered: mastered.has(r.questionId), subject: r.subject };
+    if (!r.isCorrect) map[r.questionId].wrong++;
+  });
+  const unmasteredIds = new Set(
+    Object.entries(map).filter(([_, v]) => v.wrong > 0 && !v.mastered && v.subject === subject).map(([k]) => k)
+  );
 
   const allIds = new Set([...yesterdayWrongIds, ...unmasteredIds]);
-  // Remove mastered
-  const mastered = new Set(loadMasteredIds());
   const finalIds = [...allIds].filter(id => !mastered.has(id));
 
   return Q.questions.filter(q => finalIds.includes(q.id) && q.subject === subject);
@@ -1843,11 +1881,12 @@ function showSummaryCards(onDone) {
 }
 
 // ===== RESULT =====
-function showResult() {
+async function showResult() {
   saveSessionRecords();
 
   if (isMistakeMode) {
-    const wrongIds = new Set(getMistakeEntries().filter(e => !e.mastered).map(e => e.questionId));
+    const entries = await getMistakeEntries();
+    const wrongIds = new Set(entries.filter(e => !e.mastered).map(e => e.questionId));
     currentQuestions.forEach(q => {
       if (userAnswers[q.id] === true && wrongIds.has(q.id)) {
         addMastered(q.id);
@@ -2008,7 +2047,7 @@ document.getElementById('startMistakeBtn').addEventListener('click', () => start
 document.getElementById('exportMistakeCardBtn').addEventListener('click', exportMistakeCard);
 
 // ===== INIT: 动态更新题库计数和错题数 =====
-(function initHomeCounts() {
+(async function initHomeCounts() {
   renderCalendar();
   renderLevel();
   renderDailyMission();
@@ -2021,7 +2060,7 @@ document.getElementById('exportMistakeCardBtn').addEventListener('click', export
   document.getElementById('startAllBtn').textContent = `🚀 开始今日闯关 (${QUESTIONS_PER_SUBJECT * 3}题)`;
 
   // Update mistake count
-  const pending = getMistakeQuestions('all').length;
+  const pending = (await getMistakeQuestions('all')).length;
   const mistakeBtn = document.getElementById('startMistakeBtn');
   if (pending > 0) {
     mistakeBtn.textContent = `🔁 错题重练 (${pending}道待复习)`;
