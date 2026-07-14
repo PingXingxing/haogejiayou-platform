@@ -338,6 +338,64 @@
   .log-status.ok { color: #00b894; }
   .log-status.fail { color: #ff6b6b; }
 
+  .leaderboard-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .leaderboard-table th, .leaderboard-table td {
+    padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    text-align: center; font-size: 13px;
+  }
+  .leaderboard-table th { color: #8892b0; font-size: 11px; font-weight: 600; }
+  .leaderboard-table .rank { font-size: 18px; }
+  .leaderboard-table .me { background: rgba(72,219,251,0.08); }
+  .leaderboard-table .me td { color: #48dbfb; font-weight: 600; }
+
+  /* ===== KNOWLEDGE MAP ===== */
+  .knowledge-map {
+    margin: 0 0 20px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 16px;
+  }
+  .km-title {
+    color: #8892b0; font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .km-subjects { display: flex; gap: 8px; margin-bottom: 14px; }
+  .km-subj-btn {
+    flex: 1; padding: 8px; border-radius: 12px; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: #8892b0; cursor: pointer; text-align: center; transition: all 0.2s;
+  }
+  .km-subj-btn.active.math-km { background: rgba(255,107,107,0.15); border-color: #ff6b6b; color: #ff6b6b; }
+  .km-subj-btn.active.chinese-km { background: rgba(72,219,251,0.15); border-color: #48dbfb; color: #48dbfb; }
+  .km-subj-btn.active.english-km { background: rgba(254,202,87,0.15); border-color: #feca57; color: #feca57; }
+  .km-nodes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .km-node {
+    padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+    position: relative; flex: 1 1 calc(50% - 4px); min-width: calc(50% - 4px);
+  }
+  .km-node:active { transform: scale(0.95); }
+  .km-node.locked {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    color: #555; cursor: not-allowed;
+  }
+  .km-node.unlocked {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: #ccd6f6;
+  }
+  .km-node.mastered {
+    background: rgba(0,184,148,0.12); border: 1px solid rgba(0,184,148,0.25);
+    color: #00b894;
+  }
+  .km-node .km-lock { font-size: 11px; display: block; }
+  .km-node .km-pct { font-size: 10px; display: block; margin-top: 2px; }
+  .km-legend { display: flex; gap: 12px; margin-top: 10px; font-size: 11px; color: #8892b0; }
+  .km-legend span { display: flex; align-items: center; gap: 4px; }
+  .km-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .km-legend-dot.locked { background: #555; }
+  .km-legend-dot.unlocked { background: #ccd6f6; }
+  .km-legend-dot.mastered { background: #00b894; }
+
   .empty-state { text-align: center; padding: 40px 20px; color: #8892b0; }
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .empty-state .empty-text { font-size: 15px; line-height: 1.6; }
@@ -594,6 +652,20 @@
       <div class="daily-mission-status" id="missionStatus"></div>
     </div>
 
+    <div class="knowledge-map" id="knowledgeMap">
+      <div class="km-title">
+        <span>🗺️ 知识点地图</span>
+        <span id="kmProgress" style="color:#00b894;font-size:11px;"></span>
+      </div>
+      <div class="km-subjects" id="kmSubjects"></div>
+      <div class="km-nodes" id="kmNodes"></div>
+      <div class="km-legend">
+        <span><div class="km-legend-dot locked"></div> 未解锁</span>
+        <span><div class="km-legend-dot unlocked"></div> 已解锁</span>
+        <span><div class="km-legend-dot mastered"></div> 已掌握(≥80%)</span>
+      </div>
+    </div>
+
     <div class="subjects">
       <div class="subject-card" id="subjectMath">
         <div class="subject-icon">📐</div>
@@ -675,6 +747,9 @@
 
     <div class="section-title">📋 最近答题</div>
     <div id="analysisLog"></div>
+
+    <div class="section-title">🏆 同伴对比</div>
+    <div id="analysisLeaderboard"></div>
 
     <button class="export-btn" id="exportRecordsBtn">📤 导出记录（可发给老师分析）</button>
     <button class="clear-btn" id="clearRecordsBtn">🗑 清除所有记录</button>
@@ -900,6 +975,98 @@ function getTodayMission() {
   const mission = { date: today, mission: MISSIONS[idx].id, completed: false };
   localStorage.setItem(MISSION_KEY, JSON.stringify(mission));
   return mission;
+}
+
+// ===== KNOWLEDGE MAP =====
+let kmCurrentSubject = 'math';
+const KM_ORDER = {
+  math: ['math-rational-add', 'math-rational-sub', 'math-rational-mul', 'math-rational-div', 'math-rational-abs', 'math-rational-mix', 'math-integer-op', 'math-linear-eq', 'math-power', 'math-frac'],
+  chinese: ['chinese-typo', 'chinese-grammar', 'chinese-idiom', 'chinese-poem', 'chinese-classical', 'chinese-lit', 'chinese-typo2'],
+  english: ['english-be', 'english-present', 'english-words', 'english-phonetic', 'english-article', 'english-pronoun', 'english-prep', 'english-can', 'english-present-cont']
+};
+
+function renderKnowledgeMap() {
+  const subject = kmCurrentSubject;
+  const order = KM_ORDER[subject] || [];
+  const records = loadAllRecordsSync();
+  const mastered = new Set(loadMasteredIds());
+
+  // Calculate per-topic accuracy
+  const topicStats = {};
+  order.forEach(tk => {
+    const tr = records.filter(r => r.topic === tk);
+    const correct = tr.filter(r => r.isCorrect).length;
+    topicStats[tk] = { total: tr.length, correct, pct: tr.length > 0 ? Math.round(correct/tr.length*100) : 0 };
+  });
+
+  // Unlock logic: first topic always unlocked, subsequent unlock if previous >= 60% or has >= 3 attempts
+  const unlocked = new Set();
+  for (let i = 0; i < order.length; i++) {
+    if (i === 0) { unlocked.add(order[i]); continue; }
+    const prev = order[i-1];
+    const prevStats = topicStats[prev];
+    if (prevStats.total >= 3 || prevStats.pct >= 60) {
+      unlocked.add(order[i]);
+    }
+  }
+
+  const masteredSet = new Set();
+  order.forEach(tk => {
+    if (topicStats[tk].total >= 5 && topicStats[tk].pct >= 80) masteredSet.add(tk);
+    if (mastered.has(tk)) masteredSet.add(tk); // manually mastered
+  });
+
+  const totalMastered = order.filter(tk => masteredSet.has(tk)).length;
+  document.getElementById('kmProgress').textContent = `${totalMastered}/${order.length} 掌握`;
+
+  // Subject tabs
+  const subjNames = { math: '📐 数学', chinese: '📖 语文', english: '🌍 英语' };
+  const subjClasses = { math: 'math-km', chinese: 'chinese-km', english: 'english-km' };
+  document.getElementById('kmSubjects').innerHTML = Object.keys(subjNames).map(s =>
+    `<button class="km-subj-btn ${s === subject ? 'active ' + subjClasses[s] : ''}" onclick="switchKmSubject('${s}')">${subjNames[s]}</button>`
+  ).join('');
+
+  // Nodes
+  document.getElementById('kmNodes').innerHTML = order.map(tk => {
+    const isUnlocked = unlocked.has(tk);
+    const isMastered = masteredSet.has(tk);
+    const stats = topicStats[tk];
+    let cls = 'km-node locked';
+    let icon = '🔒';
+    let label = getTopicName(tk);
+    let pctText = '';
+    if (isMastered) { cls = 'km-node mastered'; icon = '⭐'; pctText = stats.total > 0 ? `${stats.pct}%` : ''; }
+    else if (isUnlocked) { cls = 'km-node unlocked'; icon = '🔓'; pctText = stats.total > 0 ? `${stats.pct}%` : '新'; }
+
+    const clickHandler = isUnlocked ? `onclick="startKmQuiz('${tk}')"` : '';
+    return `<div class="${cls}" ${clickHandler}>
+      ${icon} ${label}
+      <span class="km-pct">${pctText}</span>
+    </div>`;
+  }).join('');
+}
+
+function switchKmSubject(subj) {
+  kmCurrentSubject = subj;
+  renderKnowledgeMap();
+}
+
+function startKmQuiz(topicKey) {
+  // Find all questions for this topic
+  const pool = Q.questions.filter(q => q.topic === topicKey);
+  if (pool.length === 0) { showToast('该知识点暂无题目', 2000); return; }
+  // Shuffle and take up to 5
+  currentQuestions = pool.sort(() => Math.random() - 0.5).slice(0, Math.min(5, pool.length));
+  isMistakeMode = false;
+  currentIndex = 0;
+  score = 0;
+  combo = 0;
+  userAnswers = {};
+  sessionRecords = [];
+  totalQuestions = currentQuestions.length;
+  showScreen($quiz);
+  updateComboBar();
+  loadQuestion();
 }
 
 function renderDailyMission() {
@@ -1488,6 +1655,41 @@ async function renderAnalysis() {
       </div>`;
   });
   document.getElementById('analysisLog').innerHTML = logHTML || '<div class="empty-state"><div class="empty-text">暂无数据</div></div>';
+
+  // Load leaderboard
+  renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+  const el = document.getElementById('analysisLeaderboard');
+  el.innerHTML = '<div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+  try {
+    const resp = await fetch(API_BASE + '/api/leaderboard');
+    if (!resp.ok) { el.innerHTML = '<div class="empty-state"><div class="empty-text">暂无同伴数据</div></div>'; return; }
+    const data = await resp.json();
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-text">还没有人做过题，快来做第一个吧！</div></div>';
+      return;
+    }
+    const rankEmoji = ['🥇','🥈','🥉'];
+    let html = '<table class="leaderboard-table"><tr><th>排名</th><th>用户</th><th>总题数</th><th>正确率</th><th>学习天数</th></tr>';
+    data.forEach((user, i) => {
+      const isMe = (user.user_id === 'default'); // adjust if user_id changes
+      const emoji = rankEmoji[i] || (i + 1);
+      const pctClass = user.accuracy >= 67 ? 'good' : (user.accuracy >= 33 ? 'mid' : 'bad');
+      html += `<tr class="${isMe ? 'me' : ''}">
+        <td class="rank">${emoji}</td>
+        <td>${user.user_id}${isMe ? ' 👈' : ''}</td>
+        <td>${user.total}</td>
+        <td class="${pctClass}">${user.accuracy}%</td>
+        <td>${user.days}天</td>
+      </tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-text">📡 无法加载同伴数据</div></div>';
+  }
 }
 const QUESTIONS_PER_SUBJECT = 5; // 每科抽取5道题
 
@@ -2050,6 +2252,7 @@ document.getElementById('exportMistakeCardBtn').addEventListener('click', export
 (async function initHomeCounts() {
   renderCalendar();
   renderLevel();
+  renderKnowledgeMap();
   renderDailyMission();
   const mathCount = getQuestionCount('math');
   const chineseCount = getQuestionCount('chinese');

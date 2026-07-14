@@ -102,6 +102,35 @@ def get_records():
     return jsonify(records)
 
 
+@app.route('/api/leaderboard', methods=['GET'])
+def get_leaderboard():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    # Overall leaderboard
+    c.execute('''
+        SELECT user_id, COUNT(*) as total, SUM(is_correct) as correct,
+               COUNT(DISTINCT DATE(timestamp/1000, 'unixepoch')) as days,
+               MAX(timestamp) as last_time
+        FROM records GROUP BY user_id ORDER BY total DESC
+    ''')
+    rows = c.fetchall()
+    conn.close()
+
+    leaderboard = []
+    for r in rows:
+        uid, total, correct, days, last = r
+        pct = round(correct / total * 100) if total else 0
+        leaderboard.append({
+            'user_id': uid,
+            'total': total,
+            'correct': correct,
+            'accuracy': pct,
+            'days': days,
+            'last_time': last
+        })
+    return jsonify(leaderboard)
+
+
 @app.route('/parent', methods=['GET'])
 def parent_view():
     pwd = request.args.get('pwd', '')
