@@ -528,7 +528,7 @@
     <div class="section-title">📋 最近答题</div>
     <div id="analysisLog"></div>
 
-    <button class="export-btn" id="exportRecordsBtn">📤 下载报告（.txt文件，可分享）</button>
+    <button class="export-btn" id="exportRecordsBtn">📤 导出记录（可发给老师分析）</button>
     <button class="clear-btn" id="clearRecordsBtn">🗑 清除所有记录</button>
 
     <div class="nav-row" style="margin-top:10px;">
@@ -814,22 +814,34 @@ function exportRecords() {
   report += '📎 以下为原始JSON数据，可用于程序分析\n';
   report += JSON.stringify(records);
 
-  // Download as file
-  downloadFile(report, timeStr);
+  // Copy to clipboard (primary)
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(report).then(() => {
+      showToast('✅ 报告已复制！打开微信粘贴发送给皓祤哥即可', 3000);
+    }).catch(() => {
+      fallbackCopy(report);
+    });
+  } else {
+    fallbackCopy(report);
+  }
 }
 
-function downloadFile(content, timeStr) {
-  const filename = `答题报告_${timeStr.replace(/[/:]/g, '-').replace(/\s/g, '_')}.txt`;
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('✅ 报告已下载！可直接分享文件给皓祤哥', 3000);
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showToast('✅ 报告已复制！打开微信粘贴发送给皓祤哥即可', 3000);
+  } catch (e) {
+    showToast('⚠️ 复制失败，请尝试截图发送', 2500);
+  }
+  document.body.removeChild(textarea);
 }
 
 
