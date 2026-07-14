@@ -622,45 +622,38 @@
       <div class="subtitle">今天 10 分钟，轻松提升成绩</div>
     </div>
 
-    <!-- Level + Daily Mission row -->
-    <div style="display:flex;gap:10px;margin-bottom:14px;">
-      <div class="level-card" id="levelCard" style="flex:1;margin:0;">
-        <div class="level-badge" id="levelBadge">🥉</div>
-        <div class="level-info">
-          <div class="level-name" id="levelName">青铜</div>
-          <div class="level-bar-outer"><div class="level-bar-inner" id="levelBar" style="width:0%"></div></div>
-          <div class="level-xp" id="levelXp">0/100</div>
-        </div>
-      </div>
-      <div class="daily-mission" id="dailyMission" style="display:none;flex:1;margin:0;">
-        <div class="daily-mission-icon">🎯</div>
-        <div class="daily-mission-info">
-          <div class="daily-mission-title" id="missionTitle">今日挑战</div>
-          <div class="daily-mission-desc" id="missionDesc"></div>
-        </div>
-        <div class="daily-mission-reward" id="missionReward"></div>
-        <div class="daily-mission-status" id="missionStatus"></div>
-      </div>
-    </div>
-
-    <!-- Streak + Calendar (collapsible) -->
-    <div class="streak-card" style="margin:0 0 14px;cursor:pointer;" id="streakToggle">
+    <div class="streak-card">
       <div class="streak-fire">🔥</div>
       <div class="streak-info">
         <div class="streak-num" id="todayStreak">0 天</div>
-        <div class="streak-label">连续打卡 · 点击展开日历</div>
+        <div class="streak-label">连续打卡</div>
       </div>
-      <span id="streakArrow" style="color:#8892b0;">▾</span>
-    </div>
-    <div id="calendarSection" style="display:none;">
-      <div class="calendar-label" id="calendarLabel"></div>
-      <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <!-- CTA: Start Quiz -->
-    <button class="start-btn" id="startAllBtn" style="margin-top:0;margin-bottom:16px;">🚀 开始今日闯关 (15题)</button>
+    <div class="calendar-label" id="calendarLabel"></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
 
-    <!-- Subjects quick access -->
+    <div class="level-card" id="levelCard">
+      <div class="level-badge" id="levelBadge">🥉</div>
+      <div class="level-info">
+        <div class="level-name" id="levelName">青铜 · 新手学徒</div>
+        <div class="level-bar-outer"><div class="level-bar-inner" id="levelBar" style="width:0%"></div></div>
+        <div class="level-xp" id="levelXp">0 / 100 经验值</div>
+      </div>
+    </div>
+
+    <div class="daily-mission" id="dailyMission" style="display:none;">
+      <div class="daily-mission-icon">🎯</div>
+      <div class="daily-mission-info">
+        <div class="daily-mission-title" id="missionTitle">今日挑战</div>
+        <div class="daily-mission-desc" id="missionDesc"></div>
+      </div>
+      <div class="daily-mission-reward" id="missionReward"></div>
+      <div class="daily-mission-status" id="missionStatus"></div>
+    </div>
+
+    <button class="start-btn" id="startAllBtn">🚀 开始今日闯关 (15题)</button>
+
     <div class="subjects">
       <div class="subject-card" id="subjectMath">
         <div class="subject-icon">📐</div>
@@ -688,7 +681,6 @@
       </div>
     </div>
 
-    <!-- Nav buttons -->
     <div class="nav-row">
       <button class="nav-btn primary" id="goAnalysisBtn">📊 学习分析</button>
       <button class="nav-btn" id="goMistakeBookBtn" style="background:rgba(254,202,87,0.15);border-color:rgba(254,202,87,0.3);color:#feca57;">📝 错题本</button>
@@ -697,25 +689,22 @@
       <button class="nav-btn primary" id="startMistakeBtn" style="background:linear-gradient(135deg,#feca57,#ff9f43);color:#1a1a2e;font-weight:800;">🔁 错题重练</button>
     </div>
 
-    <!-- Knowledge map (collapsible) -->
-    <div class="km-toggle" style="text-align:center;margin-top:20px;color:#8892b0;font-size:13px;cursor:pointer;" id="kmToggle">
-      🗺️ 知识点地图 <span id="kmToggleArrow">▾</span>
-    </div>
-    <div id="kmSection" style="display:none;">
-      <div class="knowledge-map" id="knowledgeMap">
-        <div class="km-title">
-          <span>🗺️ 知识点地图</span>
-          <span id="kmProgress" style="color:#00b894;font-size:11px;"></span>
-        </div>
-        <div class="km-subjects" id="kmSubjects"></div>
-        <div class="km-nodes" id="kmNodes"></div>
-        <div class="km-legend">
-          <span><div class="km-legend-dot locked"></div> 未解锁</span>
-          <span><div class="km-legend-dot unlocked"></div> 已解锁</span>
-          <span><div class="km-legend-dot mastered"></div> 已掌握(≥80%)</span>
-        </div>
+    <div class="knowledge-map" id="knowledgeMap">
+      <div class="km-title">
+        <span>🗺️ 知识点地图</span>
+        <span id="kmProgress" style="color:#00b894;font-size:11px;"></span>
+      </div>
+      <div class="km-subjects" id="kmSubjects"></div>
+      <div class="km-nodes" id="kmNodes"></div>
+      <div class="km-legend">
+        <span><div class="km-legend-dot locked"></div> 未解锁</span>
+        <span><div class="km-legend-dot unlocked"></div> 已解锁</span>
+        <span><div class="km-legend-dot mastered"></div> 已掌握(≥80%)</span>
       </div>
     </div>
+
+    <div class="calendar-label" id="calendarLabel"></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 
   <!-- Mistake Book Screen -->
@@ -917,12 +906,12 @@ async function renderCalendar() {
 // ===== LEVEL / XP SYSTEM =====
 const XP_KEY = 'daily_quiz_xp';
 const LEVELS = [
-  { name: '青铜', icon: '🥉', min: 0 },
-  { name: '白银', icon: '🥈', min: 100 },
-  { name: '黄金', icon: '🥇', min: 300 },
-  { name: '铂金', icon: '💎', min: 600 },
-  { name: '钻石', icon: '👑', min: 1000 },
-  { name: '王者', icon: '🏆', min: 2000 },
+  { name: '青铜 · 新手学徒', icon: '🥉', min: 0 },
+  { name: '白银 · 入门选手', icon: '🥈', min: 100 },
+  { name: '黄金 · 实力新星', icon: '🥇', min: 300 },
+  { name: '铂金 · 进阶达人', icon: '💎', min: 600 },
+  { name: '钻石 · 学霸之路', icon: '👑', min: 1000 },
+  { name: '王者 · 知识大师', icon: '🏆', min: 2000 },
 ];
 
 function getXp() {
@@ -2286,32 +2275,6 @@ document.getElementById('exportMistakeCardBtn').addEventListener('click', export
     mistakeBtn.textContent = '🔁 错题重练 · 无错题';
     mistakeBtn.style.opacity = '0.6';
   }
-
-  // Collapsible sections
-  document.getElementById('streakToggle').addEventListener('click', () => {
-    const sec = document.getElementById('calendarSection');
-    const arrow = document.getElementById('streakArrow');
-    if (sec.style.display === 'none') {
-      sec.style.display = 'block';
-      arrow.textContent = '▴';
-      document.getElementById('streakToggle').querySelector('.streak-label').textContent = '连续打卡 · 点击收起';
-    } else {
-      sec.style.display = 'none';
-      arrow.textContent = '▾';
-      document.getElementById('streakToggle').querySelector('.streak-label').textContent = '连续打卡 · 点击展开日历';
-    }
-  });
-  document.getElementById('kmToggle').addEventListener('click', () => {
-    const sec = document.getElementById('kmSection');
-    const arrow = document.getElementById('kmToggleArrow');
-    if (sec.style.display === 'none') {
-      sec.style.display = 'block';
-      arrow.textContent = '▴';
-    } else {
-      sec.style.display = 'none';
-      arrow.textContent = '▾';
-    }
-  });
 })();
 </script>
 
