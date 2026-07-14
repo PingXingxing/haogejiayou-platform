@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>每日闯关 - 学习小助手</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0f0f1a;
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+  }
+  .app {
+    width: 100%; max-width: 420px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* ===== HOME ===== */
+  .screen { display: none; flex-direction: column; flex: 1; padding: 24px 20px; }
+  .screen.active { display: flex; }
+
+  .home-header { text-align: center; padding-top: 40px; }
+  .logo { font-size: 48px; margin-bottom: 8px; animation: float 3s ease-in-out infinite; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .title {
+    font-size: 28px; font-weight: 900; color: #fff;
+    background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle { color: #8892b0; font-size: 14px; margin-top: 4px; }
+
+  .streak-card {
+    margin: 28px 0 20px;
+    background: linear-gradient(135deg, rgba(255,107,107,0.15), rgba(254,202,87,0.1));
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 16px;
+  }
+  .streak-fire { font-size: 40px; }
+  .streak-info { flex: 1; }
+  .streak-num { font-size: 32px; font-weight: 900; color: #ff6b6b; }
+  .streak-label { color: #8892b0; font-size: 13px; }
+
+  .subjects { display: flex; flex-direction: column; gap: 12px; }
+  .subject-card {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 16px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .subject-card:active { transform: scale(0.97); background: rgba(255,255,255,0.1); }
+  .subject-icon { font-size: 32px; width: 48px; text-align: center; }
+  .subject-text { flex: 1; }
+  .subject-name { color: #fff; font-size: 17px; font-weight: 700; }
+  .subject-desc { color: #8892b0; font-size: 12px; margin-top: 2px; }
+  .subject-arrow { color: #8892b0; font-size: 20px; }
+
+  .start-btn {
+    margin-top: 24px;
+    width: 100%; padding: 18px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: #fff; font-size: 20px; font-weight: 800;
+    border: none; border-radius: 16px;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(255,107,107,0.3);
+  }
+  .start-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+  /* ===== QUIZ ===== */
+  .quiz-topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 8px;
+  }
+  .back-btn {
+    background: rgba(255,255,255,0.1); border: none;
+    color: #fff; font-size: 18px; width: 36px; height: 36px;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .back-btn:active { background: rgba(255,255,255,0.2); }
+  .progress-wrap { flex: 1; display: flex; align-items: center; gap: 10px; }
+  .progress-bar {
+    flex: 1; height: 8px; background: rgba(255,255,255,0.1);
+    border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #48dbfb, #0abde3); border-radius: 4px; transition: width 0.4s ease; }
+  .progress-text { color: #8892b0; font-size: 13px; min-width: 32px; text-align: right; }
+
+  .quiz-subject-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.08); border-radius: 20px;
+    padding: 6px 14px; font-size: 13px; color: #8892b0;
+    margin-bottom: 24px;
+  }
+
+  .quiz-question {
+    color: #fff; font-size: 20px; font-weight: 600;
+    line-height: 1.6; margin-bottom: 28px;
+    min-height: 80px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    position: relative;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 18px 20px;
+    color: #ccd6f6; font-size: 17px;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .option:active { transform: scale(0.98); }
+  .option-letter {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: #8892b0;
+    flex-shrink: 0;
+  }
+
+  .option.correct {
+    background: rgba(0,184,148,0.2); border-color: #00b894;
+  }
+  .option.correct .option-letter { background: #00b894; color: #fff; }
+  .option.wrong {
+    background: rgba(255,107,107,0.2); border-color: #ff6b6b;
+    animation: shake 0.5s;
+  }
+  .option.wrong .option-letter { background: #ff6b6b; color: #fff; }
+  .option.disabled { pointer-events: none; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  .feedback {
+    display: none; margin-top: 20px;
+    background: rgba(255,255,255,0.05); border-radius: 14px; padding: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .feedback.show { display: block; }
+  .feedback-header {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 700; margin-bottom: 10px;
+  }
+  .feedback.correct-fb .feedback-header { color: #00b894; }
+  .feedback.wrong-fb .feedback-header { color: #ff6b6b; }
+  .feedback-body { color: #a8b2d1; font-size: 14px; line-height: 1.7; }
+
+  .next-btn {
+    display: none; margin-top: 16px;
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, #48dbfb, #0abde3);
+    color: #1a1a2e; font-size: 17px; font-weight: 800;
+    border: none; border-radius: 14px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:active { transform: scale(0.96); }
+
+  /* ===== RESULT ===== */
+  .result-screen { text-align: center; padding-top: 50px; }
+  .result-icon { font-size: 64px; margin-bottom: 12px; }
+  .result-score {
+    font-size: 56px; font-weight: 900;
+    background: linear-gradient(135deg, #feca57, #ff9f43);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .result-label { color: #8892b0; font-size: 15px; margin-bottom: 32px; }
+  .result-detail { text-align: left; margin-bottom: 32px; }
+  .result-row {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.05); border-radius: 12px;
+    padding: 14px; margin-bottom: 8px;
+  }
+  .result-row-icon { font-size: 24px; }
+  .result-row-text { flex: 1; color: #ccd6f6; font-size: 15px; }
+  .result-row-score { font-weight: 700; font-size: 16px; }
+  .result-row-score.good { color: #00b894; }
+  .result-row-score.bad { color: #ff6b6b; }
+
+  .retry-btn {
+    width: 100%; padding: 18px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: #fff; font-size: 18px; font-weight: 800;
+    border: none; border-radius: 16px;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(255,107,107,0.3);
+  }
+  .retry-btn:active { transform: scale(0.96); }
+
+  /* ===== TOP BAR (persistent) ===== */
+  .combo-bar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 6px 14px; border-radius: 20px;
+    background: rgba(254,202,87,0.15); border: 1px solid rgba(254,202,87,0.3);
+    font-size: 14px; color: #feca57; font-weight: 700;
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    opacity: 0; transition: opacity 0.3s;
+    z-index: 10;
+  }
+  .combo-bar.visible { opacity: 1; }
+  .combo-bar.pulse { animation: pulse 0.5s ease; }
+  @keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.15); }
+    100% { transform: translateX(-50%) scale(1); }
+  }
+
+  /* ===== PARTICLES ===== */
+  .particles {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 100;
+  }
+  .particle {
+    position: absolute;
+    font-size: 20px;
+    animation: particle-fly 1s ease-out forwards;
+  }
+  @keyframes particle-fly {
+    0% { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+  }
+
+  .overlay-msg {
+    position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 40px; font-weight: 900;
+    pointer-events: none; z-index: 101;
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .overlay-msg.show { opacity: 1; }
+  .overlay-msg.correct-msg { color: #00b894; }
+  .overlay-msg.wrong-msg { color: #ff6b6b; }
+
+  /* ===== LOADING ANIM ===== */
+  .loading-dots { display: flex; gap: 6px; justify-content: center; padding: 20px; }
+  .loading-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #48dbfb; animation: dot-bounce 0.6s infinite alternate;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0% { transform: translateY(0); opacity: 0.4; }
+    100% { transform: translateY(-12px); opacity: 1; }
+  }
+
+  /* ===== ANALYSIS PAGE ===== */
+  .analysis-header { text-align: center; padding-top: 20px; margin-bottom: 20px; }
+  .analysis-title { color: #fff; font-size: 22px; font-weight: 800; }
+  .analysis-subtitle { color: #8892b0; font-size: 13px; margin-top: 4px; }
+
+  .stats-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .stat-card {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 14px 10px; text-align: center;
+  }
+  .stat-num { font-size: 26px; font-weight: 900; color: #fff; }
+  .stat-label { color: #8892b0; font-size: 11px; margin-top: 4px; }
+  .stat-num.green { color: #00b894; }
+  .stat-num.red { color: #ff6b6b; }
+  .stat-num.yellow { color: #feca57; }
+
+  .section-title {
+    color: #8892b0; font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 10px; margin-top: 8px;
+  }
+
+  .subject-bar-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+  }
+  .subject-bar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .subject-bar-icon { font-size: 24px; }
+  .subject-bar-name { flex: 1; color: #ccd6f6; font-size: 15px; font-weight: 600; }
+  .subject-bar-score { color: #fff; font-size: 15px; font-weight: 700; }
+  .subject-bar-outer { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .subject-bar-inner { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .subject-bar-inner.math-bar { background: linear-gradient(90deg, #ff6b6b, #ee5a24); }
+  .subject-bar-inner.chinese-bar { background: linear-gradient(90deg, #48dbfb, #0abde3); }
+  .subject-bar-inner.english-bar { background: linear-gradient(90deg, #feca57, #ff9f43); }
+
+  .topic-row {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.04); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 6px;
+  }
+  .topic-icon { font-size: 18px; width: 28px; text-align: center; }
+  .topic-name { flex: 1; color: #ccd6f6; font-size: 14px; }
+  .topic-score { font-weight: 700; font-size: 14px; }
+  .topic-bar-wrap { width: 60px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .topic-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  .log-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.04); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 6px; font-size: 13px;
+  }
+  .log-icon { font-size: 18px; width: 28px; text-align: center; }
+  .log-detail { flex: 1; }
+  .log-subject { color: #ccd6f6; font-weight: 600; }
+  .log-topic { color: #8892b0; }
+  .log-status { font-weight: 700; font-size: 13px; }
+  .log-status.ok { color: #00b894; }
+  .log-status.fail { color: #ff6b6b; }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: #8892b0; }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state .empty-text { font-size: 15px; line-height: 1.6; }
+
+  .clear-btn {
+    display: block; margin: 20px auto 0;
+    background: none; border: 1px solid rgba(255,107,107,0.3);
+    color: #ff6b6b; font-size: 13px; padding: 10px 24px;
+    border-radius: 20px; cursor: pointer;
+  }
+  .clear-btn:active { background: rgba(255,107,107,0.1); }
+
+  .nav-row {
+    display: flex; gap: 10px; margin-top: 16px;
+  }
+  .nav-btn {
+    flex: 1; padding: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #ccd6f6; font-size: 15px; font-weight: 600;
+    border-radius: 14px; cursor: pointer; text-align: center;
+    transition: all 0.2s;
+  }
+  .nav-btn:active { background: rgba(255,255,255,0.15); }
+  .nav-btn.primary { background: linear-gradient(135deg, #48dbfb, #0abde3); color: #1a1a2e; border: none; font-weight: 800; }
+
+  /* ===== ERROR BOOK ===== */
+  .mistake-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .mistake-title { color: #fff; font-size: 22px; font-weight: 800; flex: 1; }
+  .mistake-count { color: #feca57; font-size: 14px; }
+
+  .subject-filter { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+  .subject-filter-btn {
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: #8892b0; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+  }
+  .subject-filter-btn.active { background: rgba(72,219,251,0.2); border-color: #48dbfb; color: #48dbfb; }
+  .subject-filter-btn:active { transform: scale(0.95); }
+
+  .mistake-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+  }
+  .mistake-card.mastered { opacity: 0.5; border-color: rgba(0,184,148,0.3); }
+
+  .mistake-q-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .mistake-q-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: rgba(255,107,107,0.15); color: #ff6b6b; font-weight: 600;
+  }
+  .mistake-q-tag.math { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+  .mistake-q-tag.chinese { background: rgba(72,219,251,0.15); color: #48dbfb; }
+  .mistake-q-tag.english { background: rgba(254,202,87,0.15); color: #feca57; }
+  .mistake-q-diff { font-size: 11px; color: #8892b0; }
+  .mistake-q-mastered {
+    margin-left: auto; font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: rgba(0,184,148,0.15); color: #00b894; font-weight: 600;
+  }
+
+  .mistake-question { color: #ccd6f6; font-size: 15px; line-height: 1.6; margin-bottom: 12px; }
+
+  .mistake-answer-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 13px; }
+  .mistake-answer-badge {
+    flex: 1; padding: 8px 12px; border-radius: 10px; font-weight: 600;
+  }
+  .mistake-answer-badge.wrong-answer { background: rgba(255,107,107,0.12); color: #ff6b6b; }
+  .mistake-answer-badge.right-answer { background: rgba(0,184,148,0.12); color: #00b894; }
+
+  .mistake-explanation {
+    display: none; margin-top: 10px; padding: 12px;
+    background: rgba(255,255,255,0.04); border-radius: 10px;
+    color: #a8b2d1; font-size: 13px; line-height: 1.7;
+  }
+  .mistake-explanation.show { display: block; }
+
+  .mistake-expand-btn {
+    display: inline-block; margin-top: 4px;
+    background: none; border: none; color: #48dbfb; font-size: 13px;
+    cursor: pointer; padding: 4px 0;
+  }
+  .mistake-expand-btn:active { color: #0abde3; }
+
+  .mistake-times { color: #8892b0; font-size: 12px; margin-left: 8px; }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.85); color: #fff; font-size: 14px; font-weight: 600;
+    padding: 12px 24px; border-radius: 24px; z-index: 200;
+    pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+    max-width: 90vw; text-align: center; line-height: 1.5;
+  }
+  .toast.show { opacity: 1; }
+
+  .export-btn {
+    display: block; margin: 8px auto 0;
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    border: none; color: #fff; font-size: 14px; font-weight: 700;
+    padding: 12px 28px; border-radius: 24px; cursor: pointer;
+    transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,184,148,0.3);
+  }
+  .export-btn:active { transform: scale(0.95); opacity: 0.9; }
+</style>
+<script src="question-bank.js"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Persistent combo bar -->
+  <div class="combo-bar" id="comboBar">🔥 连对 0</div>
+
+  <!-- Home Screen -->
+  <div class="screen active" id="homeScreen">
+    <div class="home-header">
+      <div class="logo">⚡</div>
+      <div class="title">每日闯关</div>
+      <div class="subtitle">今天 10 分钟，轻松提升成绩</div>
+    </div>
+
+    <div class="streak-card">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-info">
+        <div class="streak-num" id="todayStreak">0 天</div>
+        <div class="streak-label">连续打卡</div>
+      </div>
+    </div>
+
+    <div class="subjects">
+      <div class="subject-card" id="subjectMath">
+        <div class="subject-icon">📐</div>
+        <div class="subject-text">
+          <div class="subject-name">数学 · 基础运算与方程</div>
+          <div class="subject-desc" id="mathCount">题库加载中...</div>
+        </div>
+        <div class="subject-arrow">›</div>
+      </div>
+      <div class="subject-card" id="subjectChinese">
+        <div class="subject-icon">📖</div>
+        <div class="subject-text">
+          <div class="subject-name">语文 · 古诗文与基础</div>
+          <div class="subject-desc" id="chineseCount">题库加载中...</div>
+        </div>
+        <div class="subject-arrow">›</div>
+      </div>
+      <div class="subject-card" id="subjectEnglish">
+        <div class="subject-icon">🌍</div>
+        <div class="subject-text">
+          <div class="subject-name">英语 · 语法与词汇</div>
+          <div class="subject-desc" id="englishCount">题库加载中...</div>
+        </div>
+        <div class="subject-arrow">›</div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="startAllBtn">🚀 开始今日闯关 (15题)</button>
+
+    <div class="nav-row">
+      <button class="nav-btn primary" id="goAnalysisBtn">📊 学习分析</button>
+      <button class="nav-btn" id="goMistakeBookBtn" style="background:rgba(254,202,87,0.15);border-color:rgba(254,202,87,0.3);color:#feca57;">📝 错题本</button>
+    </div>
+    <div class="nav-row" style="margin-top:10px;">
+      <button class="nav-btn primary" id="startMistakeBtn" style="background:linear-gradient(135deg,#feca57,#ff9f43);color:#1a1a2e;font-weight:800;">🔁 错题重练</button>
+    </div>
+  </div>
+
+  <!-- Mistake Book Screen -->
+  <div class="screen" id="mistakeBookScreen">
+    <div class="mistake-header">
+      <div class="mistake-title">📝 错题本</div>
+      <div class="mistake-count" id="mistakeTotalBadge"></div>
+    </div>
+
+    <div class="subject-filter" id="mistakeSubjectFilter">
+      <button class="subject-filter-btn active" data-subject="all">全部</button>
+      <button class="subject-filter-btn" data-subject="math">📐 数学</button>
+      <button class="subject-filter-btn" data-subject="chinese">📖 语文</button>
+      <button class="subject-filter-btn" data-subject="english">🌍 英语</button>
+    </div>
+
+    <div id="mistakeBookList"></div>
+
+    <div class="nav-row" style="margin-top:10px;">
+      <button class="nav-btn primary" id="startMistakeFromBookBtn" style="background:linear-gradient(135deg,#feca57,#ff9f43);color:#1a1a2e;font-weight:800;">🔁 练习这些错题</button>
+      <button class="nav-btn" id="backFromMistakeBtn">🏠 返回首页</button>
+    </div>
+  </div>
+
+  <!-- Analysis Screen -->
+  <div class="screen" id="analysisScreen">
+    <div class="analysis-header">
+      <div class="analysis-title">📊 学习分析</div>
+      <div class="analysis-subtitle">每一次答题都有记录</div>
+    </div>
+
+    <div class="stats-row" id="analysisStats"></div>
+
+    <div class="section-title">📈 各科掌握度</div>
+    <div id="analysisSubjects"></div>
+
+    <div class="section-title">🔍 知识点详情</div>
+    <div id="analysisTopics"></div>
+
+    <div class="section-title">📋 最近答题</div>
+    <div id="analysisLog"></div>
+
+    <button class="export-btn" id="exportRecordsBtn">📤 下载报告（.txt文件，可分享）</button>
+    <button class="clear-btn" id="clearRecordsBtn">🗑 清除所有记录</button>
+
+    <div class="nav-row" style="margin-top:10px;">
+      <button class="nav-btn primary" id="backToHomeBtn">🏠 返回首页</button>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div class="screen" id="quizScreen">
+    <div class="quiz-topbar">
+      <button class="back-btn" id="backBtn">←</button>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-text" id="progressText">1/6</div>
+      </div>
+    </div>
+    <div class="quiz-subject-tag" id="quizSubjectTag">📐 数学</div>
+    <div class="quiz-question" id="quizQuestion"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="feedback" id="feedbackPanel">
+      <div class="feedback-header" id="feedbackHeader"></div>
+      <div class="feedback-body" id="feedbackBody"></div>
+    </div>
+    <button class="next-btn" id="nextBtn">下一题 →</button>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="screen" id="resultScreen">
+    <div class="result-screen">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-detail" id="resultDetail"></div>
+      <button class="retry-btn" id="retryBtn">🔄 再来一次</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="particles" id="particlesContainer"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== QUESTION BANK =====
+// Loaded from question-bank.js as window.QUESTION_BANK
+const Q = window.QUESTION_BANK;
+
+function getSubjectName(subjectKey) {
+  return Q.subjects[subjectKey] ? Q.subjects[subjectKey].name : subjectKey;
+}
+function getSubjectIcon(subjectKey) {
+  return Q.subjects[subjectKey] ? Q.subjects[subjectKey].icon : '📝';
+}
+function getQuestionCount(subjectKey) {
+  return Q.questions.filter(q => q.subject === subjectKey).length;
+}
+
+// ===== STATE =====
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let combo = 0;
+let totalQuestions = 0;
+let answered = false;
+let userAnswers = {}; // track per-question correctness: { questionId: true/false }
+let questionStartTime = 0; // for timing per question
+let sessionRecords = []; // records for current session before saving
+
+// ===== DOM refs =====
+const $home = document.getElementById('homeScreen');
+const $quiz = document.getElementById('quizScreen');
+const $result = document.getElementById('resultScreen');
+const $comboBar = document.getElementById('comboBar');
+const $progressFill = document.getElementById('progressFill');
+const $progressText = document.getElementById('progressText');
+const $quizSubjectTag = document.getElementById('quizSubjectTag');
+const $quizQuestion = document.getElementById('quizQuestion');
+const $options = document.getElementById('optionsContainer');
+const $feedback = document.getElementById('feedbackPanel');
+const $feedbackHeader = document.getElementById('feedbackHeader');
+const $feedbackBody = document.getElementById('feedbackBody');
+const $nextBtn = document.getElementById('nextBtn');
+const $retryBtn = document.getElementById('retryBtn');
+const $particles = document.getElementById('particlesContainer');
+
+// ===== NAVIGATION =====
+function showScreen(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  screen.classList.add('active');
+  // Refresh mistake count when going home
+  if (screen === $home) refreshMistakeBadge();
+}
+
+function refreshMistakeBadge() {
+  const pending = getMistakeQuestions('all').length;
+  const mistakeBtn = document.getElementById('startMistakeBtn');
+  if (pending > 0) {
+    mistakeBtn.textContent = `🔁 错题重练 (${pending}道待复习)`;
+    mistakeBtn.style.opacity = '1';
+  } else {
+    mistakeBtn.textContent = '🔁 错题重练 · 无错题';
+    mistakeBtn.style.opacity = '0.6';
+  }
+}
+
+// ===== COMBO BAR =====
+function updateComboBar() {
+  if (combo >= 2) {
+    $comboBar.classList.add('visible');
+    $comboBar.innerHTML = `🔥 连对 ${combo}`;
+    if (combo >= 3) {
+      $comboBar.classList.add('pulse');
+      setTimeout(() => $comboBar.classList.remove('pulse'), 500);
+    }
+  } else {
+    $comboBar.classList.remove('visible');
+  }
+}
+
+// ===== PARTICLES =====
+function spawnParticles(x, y, count, emoji) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = emoji;
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 80;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + -40 - Math.random() * 40 + 'px');
+    $particles.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+// ===== ANSWER RECORDING =====
+const STORAGE_KEY = 'daily_quiz_records';
+
+function getTopicName(topicKey) {
+  if (Q.topics && Q.topics[topicKey]) {
+    return Q.topics[topicKey].name;
+  }
+  return topicKey;
+}
+
+function recordAnswer(q, selectedIdx, isCorrect, timeSpent) {
+  const record = {
+    id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    questionId: q.id,
+    subject: q.subject,
+    topic: q.topic,
+    difficulty: q.difficulty,
+    selectedAnswer: selectedIdx,
+    correctAnswer: q.answer,
+    isCorrect: isCorrect,
+    timestamp: Date.now(),
+    timeSpent: timeSpent
+  };
+  sessionRecords.push(record);
+}
+
+function saveSessionRecords() {
+  if (sessionRecords.length === 0) return;
+  const existing = loadAllRecords();
+  const all = existing.concat(sessionRecords);
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  } catch (e) {
+    // localStorage full — trim old records
+    const trimmed = all.slice(-500);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+  }
+  sessionRecords = [];
+}
+
+function loadAllRecords() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function clearAllRecords() {
+  localStorage.removeItem(STORAGE_KEY);
+  sessionRecords = [];
+}
+
+// ===== TOAST =====
+function showToast(msg, duration) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), duration || 2500);
+}
+
+// ===== EXPORT RECORDS =====
+function exportRecords() {
+  const records = loadAllRecords();
+  if (records.length === 0) {
+    showToast('还没有答题记录，先去做一次闯关吧！', 2000);
+    return;
+  }
+
+  // --- Build human-readable report ---
+  const now = new Date();
+  const timeStr = now.toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+
+  const total = records.length;
+  const correct = records.filter(r => r.isCorrect).length;
+  const accuracy = Math.round((correct / total) * 100);
+  const uniqueDays = new Set(records.map(r => new Date(r.timestamp).toDateString())).size;
+
+  // Today
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const todayRecords = records.filter(r => r.timestamp >= todayStart.getTime());
+  const todayCorrect = todayRecords.filter(r => r.isCorrect).length;
+
+  // Per subject
+  const subjNames = { math:'数学', chinese:'语文', english:'英语' };
+  const subjIcons = { math:'📐', chinese:'📖', english:'🌍' };
+  const subjStats = {};
+  ['math','chinese','english'].forEach(s => {
+    const sr = records.filter(r => r.subject === s);
+    const sc = sr.filter(r => r.isCorrect).length;
+    subjStats[s] = { total: sr.length, correct: sc, pct: sr.length > 0 ? Math.round((sc/sr.length)*100) : 0 };
+  });
+
+  // Per topic
+  const topicMap = {};
+  records.forEach(r => {
+    const key = r.subject + '|' + r.topic;
+    if (!topicMap[key]) topicMap[key] = { subject: r.subject, topic: r.topic, total:0, correct:0 };
+    topicMap[key].total++;
+    if (r.isCorrect) topicMap[key].correct++;
+  });
+  const topicEntries = Object.values(topicMap).sort((a,b) => {
+    const ap = a.total>0 ? a.correct/a.total : 1;
+    const bp = b.total>0 ? b.correct/b.total : 1;
+    return ap - bp;
+  });
+
+  let report = '📊 每日闯关 · 答题报告\n';
+  report += `导出时间: ${timeStr}\n`;
+  report += '═══════════════════════════\n\n';
+  report += '📈 总览\n';
+  report += `  总答题数: ${total}\n`;
+  report += `  总正确率: ${accuracy}%\n`;
+  report += `  学习天数: ${uniqueDays}\n`;
+  report += `  今日答题: ${todayRecords.length}（对${todayCorrect}题）\n\n`;
+
+  report += '📚 各科掌握度\n';
+  Object.keys(subjStats).forEach(s => {
+    const st = subjStats[s];
+    const bar = st.total > 0 ? '█'.repeat(Math.round(st.pct/10)) + '░'.repeat(10-Math.round(st.pct/10)) : '░░░░░░░░░░';
+    report += `  ${subjIcons[s]} ${subjNames[s]}: ${st.correct}/${st.total} (${st.pct}%) ${bar}\n`;
+  });
+
+  report += '\n🔍 知识点详情\n';
+  topicEntries.forEach(t => {
+    const pct = Math.round((t.correct/t.total)*100);
+    const bar = '█'.repeat(Math.round(pct/10)) + '░'.repeat(10-Math.round(pct/10));
+    const icon = subjIcons[t.subject] || '📝';
+    report += `  ${icon} ${getTopicName(t.topic)}: ${t.correct}/${t.total} (${pct}%) ${bar}\n`;
+  });
+
+  // Recent 30 records
+  const recent = records.slice(-30).reverse();
+  const diffLabels = {1:'简单',2:'中等',3:'困难'};
+  report += '\n📋 最近答题明细\n';
+  recent.forEach(r => {
+    const d = new Date(r.timestamp);
+    const dt = d.toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const icon = r.isCorrect ? '✅' : '❌';
+    const sec = Math.round(r.timeSpent/1000);
+    report += `  ${dt} ${icon} ${subjIcons[r.subject]||''}${getTopicName(r.topic)}(${diffLabels[r.difficulty]||'?'}) 用时${sec}秒\n`;
+  });
+
+  report += '\n═══════════════════════════\n';
+  report += '📎 以下为原始JSON数据，可用于程序分析\n';
+  report += JSON.stringify(records);
+
+  // Download as file
+  downloadFile(report, timeStr);
+}
+
+function downloadFile(content, timeStr) {
+  const filename = `答题报告_${timeStr.replace(/[/:]/g, '-').replace(/\s/g, '_')}.txt`;
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ 报告已下载！可直接分享文件给皓祤哥', 3000);
+}
+
+
+// ===== ANALYSIS PAGE =====
+function renderAnalysis() {
+  const records = loadAllRecords();
+  const total = records.length;
+  const correct = records.filter(r => r.isCorrect).length;
+  const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  // Today's records
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayRecords = records.filter(r => r.timestamp >= today.getTime());
+  const todayCorrect = todayRecords.filter(r => r.isCorrect).length;
+  const todayAccuracy = todayRecords.length > 0 ? Math.round((todayCorrect / todayRecords.length) * 100) : 0;
+
+  // Unique days (streak estimation)
+  const uniqueDays = new Set(records.map(r => {
+    const d = new Date(r.timestamp);
+    return d.toDateString();
+  })).size;
+
+  // Stats cards
+  document.getElementById('analysisStats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-num">${total}</div>
+      <div class="stat-label">总答题数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num ${accuracy >= 67 ? 'green' : accuracy >= 33 ? 'yellow' : 'red'}">${accuracy}%</div>
+      <div class="stat-label">总正确率</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${todayRecords.length}</div>
+      <div class="stat-label">今日答题</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${uniqueDays}</div>
+      <div class="stat-label">学习天数</div>
+    </div>
+  `;
+
+  // Empty state
+  if (total === 0) {
+    document.getElementById('analysisSubjects').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-text">还没有答题记录<br>快去做一次闯关吧！</div>
+      </div>`;
+    document.getElementById('analysisTopics').innerHTML = '';
+    document.getElementById('analysisLog').innerHTML = '';
+    return;
+  }
+
+  // Per-subject breakdown
+  const subjects = ['math', 'chinese', 'english'];
+  const subjNames = { math: '数学', chinese: '语文', english: '英语' };
+  const subjIcons = { math: '📐', chinese: '📖', english: '🌍' };
+  const subjBarClass = { math: 'math-bar', chinese: 'chinese-bar', english: 'english-bar' };
+
+  let subjHTML = '';
+  subjects.forEach(s => {
+    const sRecords = records.filter(r => r.subject === s);
+    if (sRecords.length === 0) return;
+    const sCorrect = sRecords.filter(r => r.isCorrect).length;
+    const sPct = Math.round((sCorrect / sRecords.length) * 100);
+    subjHTML += `
+      <div class="subject-bar-card">
+        <div class="subject-bar-header">
+          <div class="subject-bar-icon">${subjIcons[s]}</div>
+          <div class="subject-bar-name">${subjNames[s]}</div>
+          <div class="subject-bar-score">${sCorrect}/${sRecords.length} (${sPct}%)</div>
+        </div>
+        <div class="subject-bar-outer">
+          <div class="subject-bar-inner ${subjBarClass[s]}" style="width:${sPct}%"></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('analysisSubjects').innerHTML = subjHTML || '<div class="empty-state"><div class="empty-text">暂无数据</div></div>';
+
+  // Per-topic breakdown
+  const topicMap = {};
+  records.forEach(r => {
+    const key = r.subject + '|' + r.topic;
+    if (!topicMap[key]) {
+      topicMap[key] = { subject: r.subject, topic: r.topic, total: 0, correct: 0 };
+    }
+    topicMap[key].total++;
+    if (r.isCorrect) topicMap[key].correct++;
+  });
+
+  const topicEntries = Object.values(topicMap).sort((a, b) => {
+    // Sort: weakest topics first
+    const aPct = a.total > 0 ? a.correct / a.total : 1;
+    const bPct = b.total > 0 ? b.correct / b.total : 1;
+    return aPct - bPct;
+  });
+
+  const topicIcons = { math: '📐', chinese: '📖', english: '🌍' };
+
+  let topicHTML = '';
+  topicEntries.forEach(t => {
+    const pct = Math.round((t.correct / t.total) * 100);
+    const barColor = pct >= 67 ? '#00b894' : pct >= 33 ? '#feca57' : '#ff6b6b';
+    topicHTML += `
+      <div class="topic-row">
+        <div class="topic-icon">${topicIcons[t.subject] || '📝'}</div>
+        <div class="topic-name">${getTopicName(t.topic)}</div>
+        <div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+        <div class="topic-score" style="color:${barColor}">${t.correct}/${t.total}</div>
+      </div>`;
+  });
+  document.getElementById('analysisTopics').innerHTML = topicHTML || '<div class="empty-state"><div class="empty-text">暂无数据</div></div>';
+
+  // Recent log
+  const recent = records.slice(-20).reverse();
+  const diffLabels = { 1: '简单', 2: '中等', 3: '困难' };
+
+  let logHTML = '';
+  recent.forEach(r => {
+    const date = new Date(r.timestamp);
+    const timeStr = date.toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const subjIcon = getSubjectIcon(r.subject);
+    const topicName = getTopicName(r.topic);
+    const seconds = Math.round(r.timeSpent / 1000);
+    logHTML += `
+      <div class="log-item">
+        <div class="log-icon">${r.isCorrect ? '✅' : '❌'}</div>
+        <div class="log-detail">
+          <div class="log-subject">${subjIcon} ${topicName} <span style="font-weight:400;color:#8892b0;font-size:11px">(${diffLabels[r.difficulty] || '?'})</span></div>
+          <div class="log-topic">${timeStr} · 用时${seconds}秒</div>
+        </div>
+        <div class="log-status ${r.isCorrect ? 'ok' : 'fail'}">${r.isCorrect ? '正确' : '错误'}</div>
+      </div>`;
+  });
+  document.getElementById('analysisLog').innerHTML = logHTML || '<div class="empty-state"><div class="empty-text">暂无数据</div></div>';
+}
+const QUESTIONS_PER_SUBJECT = 5; // 每科抽取5道题
+
+// ===== MISTAKE BOOK & RETRY =====
+const MASTERED_KEY = 'daily_quiz_mastered';
+
+function loadMasteredIds() {
+  try {
+    const raw = localStorage.getItem(MASTERED_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveMasteredIds(ids) {
+  localStorage.setItem(MASTERED_KEY, JSON.stringify(ids));
+}
+
+function addMastered(questionId) {
+  const ids = loadMasteredIds();
+  if (!ids.includes(questionId)) {
+    ids.push(questionId);
+    saveMasteredIds(ids);
+  }
+}
+
+function removeMastered(questionId) {
+  const ids = loadMasteredIds().filter(id => id !== questionId);
+  saveMasteredIds(ids);
+}
+
+function resetAllMastered() {
+  localStorage.removeItem(MASTERED_KEY);
+}
+
+// Get all wrong question entries grouped by questionId
+// Returns: [{questionId, subject, topic, wrongCount, totalCount, lastWrongTime, mastered}]
+function getMistakeEntries() {
+  const records = loadAllRecords();
+  const mastered = loadMasteredIds();
+  const map = {};
+
+  records.forEach(r => {
+    if (!map[r.questionId]) {
+      map[r.questionId] = { questionId: r.questionId, subject: r.subject, topic: r.topic, wrongCount: 0, totalCount: 0, lastWrongTime: 0 };
+    }
+    map[r.questionId].totalCount++;
+    if (!r.isCorrect) {
+      map[r.questionId].wrongCount++;
+      if (r.timestamp > map[r.questionId].lastWrongTime) {
+        map[r.questionId].lastWrongTime = r.timestamp;
+      }
+    }
+  });
+
+  // Filter: at least one wrong answer, and not mastered
+  const entries = Object.values(map)
+    .filter(e => e.wrongCount > 0)
+    .map(e => ({ ...e, mastered: mastered.includes(e.questionId) }))
+    .sort((a, b) => {
+      // Un-mastered first, then by most wrong
+      if (a.mastered !== b.mastered) return a.mastered ? 1 : -1;
+      return b.wrongCount - a.wrongCount;
+    });
+
+  return entries;
+}
+
+// Get the actual question objects for mistake pool (not mastered only)
+function getMistakeQuestions(subjectFilter) {
+  const entries = getMistakeEntries().filter(e => !e.mastered);
+  if (subjectFilter && subjectFilter !== 'all') {
+    return entries.filter(e => e.subject === subjectFilter);
+  }
+  return entries;
+}
+
+// Render error book
+let currentMistakeFilter = 'all';
+
+function renderMistakeBook(filterSubject) {
+  currentMistakeFilter = filterSubject || 'all';
+  const entries = getMistakeEntries();
+  const filtered = filterSubject === 'all' ? entries : entries.filter(e => e.subject === filterSubject);
+  const unmastered = filtered.filter(e => !e.mastered);
+
+  // Update filter tab active states
+  document.querySelectorAll('#mistakeSubjectFilter .subject-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.subject === (filterSubject || 'all'));
+  });
+
+  // Update total badge
+  document.getElementById('mistakeTotalBadge').textContent =
+    unmastered.length > 0 ? `${unmastered.length} 道待复习` : '已全部掌握 ✅';
+
+  // Empty state
+  if (filtered.length === 0) {
+    document.getElementById('mistakeBookList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-text">还没有错题记录<br>快去做一次闯关吧！</div>
+      </div>`;
+    return;
+  }
+
+  const diffLabels = { 1: '简单', 2: '中等', 3: '困难' };
+  const subjBadgeClass = { math: 'math', chinese: 'chinese', english: 'english' };
+  const subjNames = { math: '数学', chinese: '语文', english: '英语' };
+
+  let html = '';
+  filtered.forEach(entry => {
+    const q = Q.questions.find(qq => qq.id === entry.questionId);
+    if (!q) return;
+
+    const wrongOpt = q.options[entry.questionId] !== undefined ? (() => {
+      // Find the last wrong answer for this question
+      const records = loadAllRecords().filter(r => r.questionId === entry.questionId && !r.isCorrect);
+      const lastWrong = records[records.length - 1];
+      return lastWrong ? q.options[lastWrong.selectedAnswer] : '';
+    })() : '';
+    const rightOpt = q.options[q.answer];
+    const mastered = entry.mastered;
+
+    html += `
+      <div class="mistake-card ${mastered ? 'mastered' : ''}">
+        <div class="mistake-q-header">
+          <span class="mistake-q-tag ${subjBadgeClass[entry.subject] || ''}">${subjNames[entry.subject] || entry.subject}</span>
+          <span class="mistake-q-diff">${diffLabels[q.difficulty] || '?'} · ${getTopicName(q.topic)}</span>
+          <span class="mistake-q-diff mistake-times">答错 ${entry.wrongCount} 次</span>
+          ${mastered ? '<span class="mistake-q-mastered">✓ 已掌握</span>' : ''}
+        </div>
+        <div class="mistake-question">${q.question}</div>
+        <div class="mistake-answer-row">
+          <div class="mistake-answer-badge wrong-answer">❌ 你的答案: ${wrongOpt ? wrongOpt.slice(3) : '?'}</div>
+          <div class="mistake-answer-badge right-answer">✅ 正确答案: ${rightOpt ? rightOpt.slice(3) : '?'}</div>
+        </div>
+        <button class="mistake-expand-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'▲ 收起解析':'▼ 查看解析'">▼ 查看解析</button>
+        <div class="mistake-explanation">${q.explanation.replace(/\n/g, '<br>')}</div>
+      </div>`;
+  });
+
+  document.getElementById('mistakeBookList').innerHTML = html;
+}
+
+// Start a quiz from mistake pool
+function startMistakeQuiz() {
+  const mistakeQs = getMistakeQuestions('all');
+  if (mistakeQs.length === 0) {
+    alert('🎉 太棒了！没有待复习的错题！');
+    return;
+  }
+
+  isMistakeMode = true;
+
+  // Get actual question objects
+  const qIds = new Set(mistakeQs.map(e => e.questionId));
+  let selected = Q.questions.filter(q => qIds.has(q.id));
+
+  // If fewer than 5, pad with random new questions
+  if (selected.length < QUESTIONS_PER_SUBJECT) {
+    const otherQs = Q.questions.filter(q => !qIds.has(q.id));
+    const shuffled = otherQs.sort(() => Math.random() - 0.5);
+    const padCount = Math.min(QUESTIONS_PER_SUBJECT - selected.length, shuffled.length);
+    selected = selected.concat(shuffled.slice(0, padCount));
+  }
+
+  // Shuffle and pick
+  selected = selected.sort(() => Math.random() - 0.5);
+  if (selected.length > 15) selected = selected.slice(0, 15);
+
+  // Start quiz
+  currentQuestions = selected;
+  currentIndex = 0;
+  score = 0;
+  combo = 0;
+  userAnswers = {};
+  sessionRecords = [];
+
+  totalQuestions = currentQuestions.length;
+  showScreen($quiz);
+  updateComboBar();
+  loadQuestion();
+}
+
+function buildQuestionSet(subject) {
+  const pool = [...Q.questions.filter(q => q.subject === subject)];
+  const shuffled = pool.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, QUESTIONS_PER_SUBJECT);
+}
+
+function loadQuestion() {
+  if (currentIndex >= totalQuestions) {
+    showResult();
+    return;
+  }
+  answered = false;
+  $feedback.classList.remove('show', 'correct-fb', 'wrong-fb');
+  $nextBtn.classList.remove('show');
+
+  const q = currentQuestions[currentIndex];
+  const subjIcon = getSubjectIcon(q.subject);
+  const subjName = getSubjectName(q.subject);
+  $quizSubjectTag.innerHTML = `${subjIcon} ${subjName}`;
+  $quizQuestion.textContent = q.question;
+  $progressFill.style.width = ((currentIndex / totalQuestions) * 100) + '%';
+  $progressText.textContent = `${currentIndex + 1}/${totalQuestions}`;
+
+  // Start timing for this question
+  questionStartTime = Date.now();
+
+  // Build options
+  $options.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    const optText = opt.slice(3);
+    div.innerHTML = `<span class="option-letter">${['A','B','C','D'][idx]}</span><span>${optText}</span>`;
+    div.addEventListener('click', () => selectAnswer(idx, div));
+    $options.appendChild(div);
+  });
+}
+
+function selectAnswer(idx, el) {
+  if (answered) return;
+  answered = true;
+
+  const q = currentQuestions[currentIndex];
+  const isCorrect = idx === q.answer;
+  const timeSpent = Date.now() - questionStartTime;
+  const allOptions = $options.querySelectorAll('.option');
+
+  // Record this answer
+  recordAnswer(q, idx, isCorrect, timeSpent);
+
+  // Highlight
+  allOptions.forEach(o => o.classList.add('disabled'));
+  allOptions[q.answer].classList.add('correct');
+
+  if (isCorrect) {
+    score++;
+    combo++;
+    el.classList.add('correct');
+    userAnswers[q.id] = true;
+
+    // Spawn celebration
+    const rect = el.getBoundingClientRect();
+    spawnParticles(rect.left + rect.width/2, rect.top, 12, '✨');
+
+    $feedback.classList.add('show', 'correct-fb');
+    $feedbackHeader.textContent = '✅ 太棒了！回答正确！';
+    $feedbackBody.textContent = q.explanation;
+  } else {
+    combo = 0;
+    el.classList.add('wrong');
+    userAnswers[q.id] = false;
+
+    $feedback.classList.add('show', 'wrong-fb');
+    $feedbackHeader.textContent = '❌ 还差一点！来看看解析：';
+    $feedbackBody.textContent = q.explanation;
+  }
+
+  updateComboBar();
+  $nextBtn.classList.add('show');
+  $nextBtn.focus();
+}
+
+function nextQuestion() {
+  currentIndex++;
+  loadQuestion();
+}
+
+let isMistakeMode = false; // tracks if current quiz is from mistake pool
+
+// ===== RESULT =====
+function showResult() {
+  // Save all records from this session
+  saveSessionRecords();
+
+  // If in mistake mode, mark correctly-answered previously-wrong questions as mastered
+  if (isMistakeMode) {
+    const wrongIds = new Set(getMistakeEntries().filter(e => !e.mastered).map(e => e.questionId));
+    currentQuestions.forEach(q => {
+      if (userAnswers[q.id] === true && wrongIds.has(q.id)) {
+        addMastered(q.id);
+      }
+    });
+    isMistakeMode = false;
+  }
+
+  showScreen($result);
+  $comboBar.classList.remove('visible');
+
+  const pct = Math.round((score / totalQuestions) * 100);
+  const $icon = document.getElementById('resultIcon');
+  const $score = document.getElementById('resultScore');
+  const $label = document.getElementById('resultLabel');
+  const $detail = document.getElementById('resultDetail');
+
+  if (pct === 100) {
+    $icon.textContent = '🏆';
+    $label.textContent = '全部答对！你太厉害了！';
+  } else if (pct >= 67) {
+    $icon.textContent = '🎉';
+    $label.textContent = '不错！继续加油！';
+  } else if (pct >= 33) {
+    $icon.textContent = '💪';
+    $label.textContent = '还有提升空间，坚持练！';
+  } else {
+    $icon.textContent = '📚';
+    $label.textContent = '没关系，多看解析慢慢来！';
+  }
+
+  $score.textContent = `${score}/${totalQuestions}`;
+
+  // Per-subject stats with actual correctness
+  const subjStats = { math: { correct: 0, total: 0 }, chinese: { correct: 0, total: 0 }, english: { correct: 0, total: 0 } };
+  currentQuestions.forEach(q => {
+    if (subjStats[q.subject]) {
+      subjStats[q.subject].total++;
+      if (userAnswers[q.id]) subjStats[q.subject].correct++;
+    }
+  });
+
+  const subjects = [
+    { key: 'math', name: '数学（有理数运算）', icon: '📐' },
+    { key: 'chinese', name: '语文（字词基础）', icon: '📖' },
+    { key: 'english', name: '英语（基础语法）', icon: '🌍' }
+  ];
+
+  $detail.innerHTML = subjects.map(s => {
+    const stats = subjStats[s.key];
+    const scoreClass = stats.total > 0 && stats.correct === stats.total ? 'good' : (stats.correct < stats.total / 2 ? 'bad' : '');
+    return `
+      <div class="result-row">
+        <div class="result-row-icon">${s.icon}</div>
+        <div class="result-row-text">${s.name}</div>
+        <div class="result-row-score ${scoreClass}">${stats.correct}/${stats.total}</div>
+      </div>`;
+  }).join('');
+}
+
+function startQuiz(subject) {
+  isMistakeMode = false;
+  currentIndex = 0;
+  score = 0;
+  combo = 0;
+  userAnswers = {};
+  sessionRecords = [];
+
+  if (subject === 'all') {
+    currentQuestions = [
+      ...buildQuestionSet('math'),
+      ...buildQuestionSet('chinese'),
+      ...buildQuestionSet('english'),
+    ];
+  } else {
+    currentQuestions = buildQuestionSet(subject);
+  }
+
+  totalQuestions = currentQuestions.length;
+  showScreen($quiz);
+  updateComboBar();
+  loadQuestion();
+}
+
+// ===== EVENT LISTENERS =====
+document.getElementById('startAllBtn').addEventListener('click', () => startQuiz('all'));
+document.getElementById('subjectMath').addEventListener('click', () => startQuiz('math'));
+document.getElementById('subjectChinese').addEventListener('click', () => startQuiz('chinese'));
+document.getElementById('subjectEnglish').addEventListener('click', () => startQuiz('english'));
+
+$nextBtn.addEventListener('click', nextQuestion);
+$retryBtn.addEventListener('click', () => showScreen($home));
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  showScreen($home);
+  $comboBar.classList.remove('visible');
+});
+
+// Analysis page
+document.getElementById('goAnalysisBtn').addEventListener('click', () => {
+  renderAnalysis();
+  showScreen(document.getElementById('analysisScreen'));
+});
+document.getElementById('backToHomeBtn').addEventListener('click', () => showScreen($home));
+document.getElementById('clearRecordsBtn').addEventListener('click', () => {
+  if (confirm('确定要清除所有答题记录吗？此操作不可撤销。')) {
+    clearAllRecords();
+    resetAllMastered();
+    renderAnalysis();
+  }
+});
+
+// Export records
+document.getElementById('exportRecordsBtn').addEventListener('click', () => {
+  exportRecords();
+});
+
+// Mistake book
+document.getElementById('goMistakeBookBtn').addEventListener('click', () => {
+  renderMistakeBook('all');
+  showScreen(document.getElementById('mistakeBookScreen'));
+});
+document.getElementById('backFromMistakeBtn').addEventListener('click', () => showScreen($home));
+document.getElementById('startMistakeFromBookBtn').addEventListener('click', () => startMistakeQuiz());
+
+// Mistake subject filter
+document.querySelectorAll('#mistakeSubjectFilter .subject-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    renderMistakeBook(btn.dataset.subject);
+  });
+});
+
+// Mistake practice
+document.getElementById('startMistakeBtn').addEventListener('click', () => startMistakeQuiz());
+
+// ===== INIT: 动态更新题库计数和错题数 =====
+(function initHomeCounts() {
+  const mathCount = getQuestionCount('math');
+  const chineseCount = getQuestionCount('chinese');
+  const englishCount = getQuestionCount('english');
+  document.getElementById('mathCount').textContent = `${mathCount} 道题 · 随机抽${QUESTIONS_PER_SUBJECT}道`;
+  document.getElementById('chineseCount').textContent = `${chineseCount} 道题 · 随机抽${QUESTIONS_PER_SUBJECT}道`;
+  document.getElementById('englishCount').textContent = `${englishCount} 道题 · 随机抽${QUESTIONS_PER_SUBJECT}道`;
+  document.getElementById('startAllBtn').textContent = `🚀 开始今日闯关 (${QUESTIONS_PER_SUBJECT * 3}题)`;
+
+  // Update mistake count
+  const pending = getMistakeQuestions('all').length;
+  const mistakeBtn = document.getElementById('startMistakeBtn');
+  if (pending > 0) {
+    mistakeBtn.textContent = `🔁 错题重练 (${pending}道待复习)`;
+    mistakeBtn.style.opacity = '1';
+  } else {
+    mistakeBtn.textContent = '🔁 错题重练 · 无错题';
+    mistakeBtn.style.opacity = '0.6';
+  }
+})();
+</script>
+
+</body>
+</html>
