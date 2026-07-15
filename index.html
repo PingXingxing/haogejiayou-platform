@@ -117,7 +117,35 @@
     display: inline-flex; align-items: center; gap: 6px;
     background: rgba(255,255,255,0.08); border-radius: 20px;
     padding: 6px 14px; font-size: 13px; color: #8892b0;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
+  }
+
+  /* 难度指示器 */
+  .diff-indicator {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; margin-bottom: 18px;
+    transition: all 0.3s;
+  }
+  .diff-level-1 { background: rgba(76,175,80,0.15); color: #81c784; border: 1px solid rgba(76,175,80,0.3); }
+  .diff-level-2 { background: rgba(255,152,0,0.15); color: #ffb74d; border: 1px solid rgba(255,152,0,0.3); }
+  .diff-level-3 { background: rgba(244,67,54,0.15); color: #ef9a9a; border: 1px solid rgba(244,67,54,0.3); }
+
+  /* 难度选择器 */
+  .difficulty-selector {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin: 8px 0 4px;
+  }
+  .diff-label { color: #8892b0; font-size: 13px; }
+  .diff-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 6px 14px; color: #8892b0;
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .diff-btn:hover { background: rgba(255,255,255,0.1); color: #ccd6f6; }
+  .diff-btn.active {
+    background: rgba(100,255,218,0.15); border-color: rgba(100,255,218,0.4);
+    color: #64ffda; font-weight: 600;
   }
 
   .quiz-question {
@@ -652,6 +680,15 @@
       <div class="daily-mission-status" id="missionStatus"></div>
     </div>
 
+    <!-- 难度选择器 -->
+    <div class="difficulty-selector" id="difficultySelector">
+      <span class="diff-label">📊 难度模式：</span>
+      <button class="diff-btn active" data-mode="auto">🤖 自适应</button>
+      <button class="diff-btn" data-mode="easy">🌱 基础</button>
+      <button class="diff-btn" data-mode="normal">⚡ 挑战</button>
+      <button class="diff-btn" data-mode="hard">🔥 极限</button>
+    </div>
+
     <button class="start-btn" id="startAllBtn">🚀 开始今日闯关 (15题)</button>
 
     <div class="subjects">
@@ -772,6 +809,7 @@
       </div>
     </div>
     <div class="quiz-subject-tag" id="quizSubjectTag">📐 数学</div>
+    <div class="diff-indicator diff-level-1" id="diffIndicator">🌱 当前难度：<strong>基础</strong> · 自适应模式</div>
     <div class="quiz-question" id="quizQuestion"></div>
     <div class="options" id="optionsContainer"></div>
     <div class="feedback" id="feedbackPanel">
@@ -1696,6 +1734,20 @@ async function renderLeaderboard() {
 }
 const QUESTIONS_PER_SUBJECT = 5; // 每科抽取5道题
 
+// ===== 自适应难度系统 =====
+let currentDifficultyMode = 'auto'; // 'auto' | 'easy' | 'normal' | 'hard'
+let adaptiveLevel = 1; // 当前自适应难度级别 1=简单 2=中等 3=困难
+let consecutiveCorrect = 0; // 连续答对数
+let totalWrongInSession = 0; // 本次闯关累计错题数
+
+function getDifficultyLabel(level) {
+  return {1: '基础', 2: '挑战', 3: '极限'}[level] || '基础';
+}
+
+function getDifficultyIcon(level) {
+  return {1: '🌱', 2: '⚡', 3: '🔥'}[level] || '🌱';
+}
+
 // ===== MISTAKE BOOK & RETRY =====
 const MASTERED_KEY = 'daily_quiz_mastered';
 
@@ -1846,9 +1898,21 @@ async function startMistakeQuiz() {
 
   isMistakeMode = true;
 
-  // Get actual question objects
+  // Get actual question objects — 错题加码：用同topic更高难度题替换
   const qIds = new Set(mistakeQs.map(e => e.questionId));
   let selected = Q.questions.filter(q => qIds.has(q.id));
+  
+  // 错题加码：尝试替换为同知识点更高难度的题
+  selected = selected.map(q => {
+    const sameTopicHarder = Q.questions.filter(qq =>
+      qq.topic === q.topic && qq.difficulty > q.difficulty && !qIds.has(qq.id)
+    );
+    if (sameTopicHarder.length > 0 && Math.random() < 0.6) {
+      // 60%概率替换为更难同类题
+      return sameTopicHarder[Math.floor(Math.random() * sameTopicHarder.length)];
+    }
+    return q;
+  });
 
   // If fewer than 5, pad with random new questions
   if (selected.length < QUESTIONS_PER_SUBJECT) {
@@ -1877,20 +1941,78 @@ async function startMistakeQuiz() {
 }
 
 function buildQuestionSet(subject) {
-  const pool = [...Q.questions.filter(q => q.subject === subject)];
+  let pool = [...Q.questions.filter(q => q.subject === subject)];
+
+  // 根据难度模式过滤
+  if (currentDifficultyMode !== 'auto') {
+    // 固定难度模式：只选取目标难度的题，不够的用相邻难度补
+    let targetDiff = adaptiveLevel;
+    let filtered = pool.filter(q => q.difficulty === targetDiff);
+    if (filtered.length < QUESTIONS_PER_SUBJECT) {
+      // 不够则放宽：先加高一级难度，再加低一级
+      if (targetDiff < 3) {
+        filtered = [...filtered, ...pool.filter(q => q.difficulty === targetDiff + 1)];
+      }
+      if (filtered.length < QUESTIONS_PER_SUBJECT && targetDiff > 1) {
+        filtered = [...filtered, ...pool.filter(q => q.difficulty === targetDiff - 1)];
+      }
+      if (filtered.length < QUESTIONS_PER_SUBJECT) {
+        filtered = pool; // 实在不够就用全部
+      }
+    }
+    pool = filtered;
+  }
+
   const shuffled = pool.sort(() => Math.random() - 0.5);
   let selected = shuffled.slice(0, QUESTIONS_PER_SUBJECT);
 
-  // Mix in 2-3 yesterday's mistakes (spaced repetition)
+  // 自适应模式：根据当前难度级别混合不同难度的题目
+  if (currentDifficultyMode === 'auto') {
+    // 按比例混合：基础级别时全部简单，逐步加入中高难度
+    let easyCount, normalCount, hardCount;
+    if (adaptiveLevel === 1) {
+      [easyCount, normalCount, hardCount] = [4, 1, 0];
+    } else if (adaptiveLevel === 2) {
+      [easyCount, normalCount, hardCount] = [2, 2, 1];
+    } else {
+      [easyCount, normalCount, hardCount] = [1, 2, 2];
+    }
+    let byDiff = {1:[], 2:[], 3:[]};
+    pool.forEach(q => { if (byDiff[q.difficulty]) byDiff[q.difficulty].push(q); });
+    let mixed = [];
+    [1,2,3].forEach(d => byDiff[d] = byDiff[d].sort(() => Math.random() - 0.5));
+    mixed = [...byDiff[1].slice(0, easyCount), ...byDiff[2].slice(0, normalCount), ...byDiff[3].slice(0, hardCount)];
+    if (mixed.length < QUESTIONS_PER_SUBJECT) {
+      // 不够用随机补
+      let remaining = pool.filter(q => !mixed.find(m => m.id === q.id)).sort(() => Math.random() - 0.5);
+      mixed = [...mixed, ...remaining.slice(0, QUESTIONS_PER_SUBJECT - mixed.length)];
+    }
+    selected = mixed.slice(0, QUESTIONS_PER_SUBJECT);
+  }
+
+  // Mix in 2-3 yesterday's mistakes (spaced repetition) — 错题加码
   const yesterdayMistakes = getYesterdayMistakes(subject);
   if (yesterdayMistakes.length > 0) {
     const mixCount = Math.min(3, yesterdayMistakes.length, QUESTIONS_PER_SUBJECT - 1);
     const mixIn = yesterdayMistakes.sort(() => Math.random() - 0.5).slice(0, mixCount);
-    // Replace last few questions with mistakes
-    selected = [...selected.slice(0, QUESTIONS_PER_SUBJECT - mixCount), ...mixIn];
+    // 错题加码：尽量替换为同知识点更高难度的题
+    const upgradedMixIn = mixIn.map(mq => upgradeMistakeQuestion(mq, subject));
+    selected = [...selected.slice(0, QUESTIONS_PER_SUBJECT - upgradedMixIn.length), ...upgradedMixIn];
   }
 
   return selected;
+}
+
+// 错题加码：找同topic更高难度的题替换
+function upgradeMistakeQuestion(mistakeQ, subject) {
+  const sameTopic = Q.questions.filter(q =>
+    q.topic === mistakeQ.topic && q.difficulty > mistakeQ.difficulty && q.id !== mistakeQ.id
+  );
+  if (sameTopic.length > 0) {
+    return sameTopic[Math.floor(Math.random() * sameTopic.length)];
+  }
+  // 没有更高难度，保持原题
+  return mistakeQ;
 }
 
 function getYesterdayMistakes(subject) {
@@ -1974,8 +2096,17 @@ function selectAnswer(idx, el) {
   if (isCorrect) {
     score++;
     combo++;
+    consecutiveCorrect++;
     el.classList.add('correct');
     userAnswers[q.id] = true;
+
+    // 自适应难度：连续答对3题升难度
+    if (currentDifficultyMode === 'auto' && consecutiveCorrect >= 3 && adaptiveLevel < 3) {
+      adaptiveLevel++;
+      consecutiveCorrect = 0;
+      updateDifficultyIndicator();
+      showOverlayMsg(`${getDifficultyIcon(adaptiveLevel)} 难度提升至「${getDifficultyLabel(adaptiveLevel)}」！`);
+    }
 
     // Sound + celebration for combos
     if (combo === 3) { playComboSound(3); showOverlayMsg('🔥 连对3题！'); }
@@ -1991,8 +2122,18 @@ function selectAnswer(idx, el) {
     $feedbackBody.textContent = q.explanation;
   } else {
     combo = 0;
+    consecutiveCorrect = 0;
+    totalWrongInSession++;
     el.classList.add('wrong');
     userAnswers[q.id] = false;
+
+    // 自适应难度：累计答错2题降难度
+    if (currentDifficultyMode === 'auto' && totalWrongInSession >= 2 && adaptiveLevel > 1) {
+      adaptiveLevel--;
+      totalWrongInSession = 0;
+      updateDifficultyIndicator();
+      showOverlayMsg(`${getDifficultyIcon(adaptiveLevel)} 难度降至「${getDifficultyLabel(adaptiveLevel)}」，慢慢来！`);
+    }
 
     $feedback.classList.add('show', 'wrong-fb');
     $feedbackHeader.textContent = '💡 又发现一个薄弱点！来看看解析：';
@@ -2006,7 +2147,36 @@ function selectAnswer(idx, el) {
 
 function nextQuestion() {
   currentIndex++;
+  // 自适应模式：下一题根据当前难度重新生成题目集
+  if (currentDifficultyMode === 'auto' && currentIndex > 0 && currentIndex < totalQuestions) {
+    const remainingSubject = currentQuestions[currentIndex]?.subject;
+    if (remainingSubject && currentQuestions.filter((q, i) => i >= currentIndex && q.subject === remainingSubject).length > 0) {
+      // 动态替换剩余题目以反映新难度
+      const newSet = buildQuestionSet(remainingSubject);
+      const remainingCount = currentQuestions.filter((q, i) => i >= currentIndex && q.subject === remainingSubject).length;
+      const newQuestions = newSet.slice(0, remainingCount);
+      let replaceIdx = currentIndex;
+      for (let i = 0; i < newQuestions.length && replaceIdx < totalQuestions; i++) {
+        if (currentQuestions[replaceIdx].subject === remainingSubject) {
+          currentQuestions[replaceIdx] = newQuestions[i];
+        }
+        replaceIdx++;
+      }
+    }
+  }
+  updateDifficultyIndicator();
   loadQuestion();
+}
+
+// 更新难度指示器
+function updateDifficultyIndicator() {
+  const indicator = document.getElementById('diffIndicator');
+  if (!indicator) return;
+  const icon = getDifficultyIcon(adaptiveLevel);
+  const label = getDifficultyLabel(adaptiveLevel);
+  const modeLabel = currentDifficultyMode === 'auto' ? '自适应' : '固定';
+  indicator.innerHTML = `${icon} 当前难度：<strong>${label}</strong> · ${modeLabel}模式`;
+  indicator.className = `diff-indicator diff-level-${adaptiveLevel}`;
 }
 
 let isMistakeMode = false; // tracks if current quiz is from mistake pool
@@ -2178,8 +2348,21 @@ function _doStartQuiz(subject) {
   currentIndex = 0;
   score = 0;
   combo = 0;
+  consecutiveCorrect = 0;
+  totalWrongInSession = 0;
   userAnswers = {};
   sessionRecords = [];
+
+  // 设置自适应难度初始值
+  if (currentDifficultyMode === 'auto') {
+    adaptiveLevel = 1; // 自适应模式从基础开始
+  } else if (currentDifficultyMode === 'easy') {
+    adaptiveLevel = 1;
+  } else if (currentDifficultyMode === 'normal') {
+    adaptiveLevel = 2;
+  } else if (currentDifficultyMode === 'hard') {
+    adaptiveLevel = 3;
+  }
 
   if (subject === 'all') {
     currentQuestions = [
@@ -2194,10 +2377,25 @@ function _doStartQuiz(subject) {
   totalQuestions = currentQuestions.length;
   showScreen($quiz);
   updateComboBar();
+  updateDifficultyIndicator();
   loadQuestion();
 }
 
 // ===== EVENT LISTENERS =====
+// 难度选择器
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDifficultyMode = btn.dataset.mode;
+    // 更新自适应级别
+    if (currentDifficultyMode === 'easy') adaptiveLevel = 1;
+    else if (currentDifficultyMode === 'normal') adaptiveLevel = 2;
+    else if (currentDifficultyMode === 'hard') adaptiveLevel = 3;
+    else adaptiveLevel = 1; // auto 从基础开始
+  });
+});
+
 document.getElementById('startAllBtn').addEventListener('click', () => startQuiz('all'));
 document.getElementById('subjectMath').addEventListener('click', () => startQuiz('math'));
 document.getElementById('subjectChinese').addEventListener('click', () => startQuiz('chinese'));

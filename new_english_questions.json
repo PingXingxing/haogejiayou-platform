@@ -1,0 +1,377 @@
+[
+  {
+    "id": "e-046",
+    "subject": "english",
+    "topic": "english-present",
+    "difficulty": 3,
+    "question": "Tom usually ___ to school on foot, but today he ___ a bus because it's raining.",
+    "options": [
+      "A. go... takes",
+      "B. goes... is taking",
+      "C. is going... takes",
+      "D. goes... take"
+    ],
+    "answer": 1,
+    "explanation": "此题考查一般现在时与现在进行时的混合辨析，是中考高频陷阱！\n\n解题步骤：\n① usually（通常）→ 习惯性动作 → 一般现在时 → Tom是第三人称单数 → goes\n② but today（但今天）+ 原因从句 → 当前正在发生的临时变化 → 现在进行时 → is taking\n\n典型错误：\n- 选A：today后面动词没变进行时\n- 选C：把usually错当成进行时\n- 选D：today后面用了动词原形\n\n口诀：usually/always/every day → 一般现在时；now/today/Look! → 进行时。两个时态同框时，各自找各自的时间标志词！"
+  },
+  {
+    "id": "e-047",
+    "subject": "english",
+    "topic": "english-be",
+    "difficulty": 3,
+    "question": "There ___ some milk and two apples in the fridge.",
+    "options": [
+      "A. is",
+      "B. are",
+      "C. am",
+      "D. be"
+    ],
+    "answer": 0,
+    "explanation": "此题考查There be句型的「就近原则」+ 不可数名词陷阱。\n\n解题思路：\n① milk是不可数名词，视为单数，milk离be动词最近 → 用is\n② 后面虽然有两个苹果（复数），但就近原则只看离be最近的那个名词！\n\n易错点：很多同学看到后面的\"two apples\"是复数就选了are，大错特错！\n\n口诀：There be就近看，离谁近就听谁的。不可数名词永远当单数！\n\n常见不可数名词：milk, water, bread, rice, money, news, information"
+  },
+  {
+    "id": "e-048",
+    "subject": "english",
+    "topic": "english-present",
+    "difficulty": 3,
+    "question": "阅读对话，选择正确答案。\nA: ___ your father ___ English?\nB: Yes, he does. He ___ it every morning.",
+    "options": [
+      "A. Do... speak... speaks",
+      "B. Does... speak... speaks",
+      "C. Does... speaks... speak",
+      "D. Do... speaks... speaks"
+    ],
+    "answer": 1,
+    "explanation": "此题考查一般现在时疑问句和肯定句的完整填空，基础弱的同学极易在第二空翻车！\n\n解题步骤：\n第一空+第二空（问句）：your father = 第三人称单数 → 用Does提问 → Does后动词必须用原形speak（不能加s！）\n第三空（答句）：He是第三人称单数，肯定句 → speaks（要加s！）\n\n核心陷阱：does后面动词用原形，但doesn't后面也是原形；肯定句主语是第三人称单数时动词才加s！\n\n对比记忆：\n- He speaks English.（肯定句，speak加s）\n- Does he speak English?（问句，does后speak用原形）\n- He doesn't speak English.（否定句，doesn't后speak用原形）\n\n口诀：does出场，动词光膀子（脱掉s）！"
+  },
+  {
+    "id": "e-049",
+    "subject": "english",
+    "topic": "english-phonetic",
+    "difficulty": 3,
+    "question": "找出划线部分发音与其他三个不同的单词。",
+    "options": [
+      "A. cake",
+      "B. name",
+      "C. cat",
+      "D. late"
+    ],
+    "answer": 2,
+    "explanation": "此题考查元音字母a在不同音节结构中的发音规律，是音标题中的经典题型！\n\n分析：\n- cake /keɪk/：a_e结构（辅音+a+辅音+不发音e），a发本音/eɪ/\n- name /neɪm/：同上，a发本音/eɪ/\n- cat /kæt/：闭音节（辅音+a+辅音），a发短音/æ/\n- late /leɪt/：同上，a发本音/eɪ/\n\n规律：末尾有不发音e时，前面的元音发「本音」（字母本身的读音）；闭音节（辅元辅结尾）发短音。\n\n口诀：元辅e结构，元音读本音；辅元辅结构，元音读短音。\ncat是短音/æ/，其他三个都是长音/eɪ/。"
+  },
+  {
+    "id": "e-050",
+    "subject": "english",
+    "topic": "english-article",
+    "difficulty": 3,
+    "question": "My father is ___ university teacher and he goes to work by ___ bike every day.",
+    "options": [
+      "A. a... /",
+      "B. an... /",
+      "C. a... the",
+      "D. an... a"
+    ],
+    "answer": 0,
+    "explanation": "此题考查a/an的发音判断 + 交通工具前零冠词的用法，两个陷阱！\n\n陷阱一：university开头字母是u（元音字母），但发音是/juː/，开头音素/j/是辅音！所以用a，不是an。\n类似词：a university, a useful book, a uniform, a European（u发/juː/开头都用a）\n\n陷阱二：by + 交通工具 = 零冠词（不加a/an/the）。\nby bike ✓  by a bike ✗\nby bus ✓  by the bus ✗\n\n口诀：a/an看音不看形！u发「优」就用a。交通工具by后免冠词！"
+  },
+  {
+    "id": "e-051",
+    "subject": "english",
+    "topic": "english-pronoun",
+    "difficulty": 3,
+    "question": "— Is this ___ schoolbag?\n— No, it isn't ___. It's ___.",
+    "options": [
+      "A. your... mine... his",
+      "B. yours... my... him",
+      "C. your... my... his",
+      "D. yours... mine... his"
+    ],
+    "answer": 0,
+    "explanation": "此题考查形容词性物主代词和名词性物主代词的混合辨析，代词题中的「老大难」！\n\n解题步骤：\n第一空：schoolbag是名词，前面需要用形容词性物主代词修饰 → your（你的）\n第二空：后面没有名词，需要用名词性物主代词 → mine（我的）\n第三空：后面没有名词，同样需要名词性物主代词 → his（他的）\n\n对比表：\n| 形容词性（后接名词） | 名词性（独立使用） |\n|---|---|\n| my book | This book is mine. |\n| your pen | This pen is yours. |\n| his bag | This bag is his. |\n| her ruler | This ruler is hers. |\n\n口诀：有名用形代，无名用名代！his特殊记——形代名代一个样。"
+  },
+  {
+    "id": "e-052",
+    "subject": "english",
+    "topic": "english-prep",
+    "difficulty": 3,
+    "question": "My birthday is ___ July 15th, and I was born ___ 2011 ___ Guangzhou.",
+    "options": [
+      "A. on... in... in",
+      "B. in... on... in",
+      "C. on... in... at",
+      "D. at... in... in"
+    ],
+    "answer": 0,
+    "explanation": "此题考查in/on/at在时间+地点中的综合使用，三大介词混用是中考必考难点！\n\n时间介词规则：\n① at + 具体时刻（at 8:00, at noon, at night）\n② on + 具体某天/某日上午下午晚上（on July 15th, on Monday, on a cold morning）\n③ in + 年月季节/泛指上午下午晚上（in 2011, in July, in summer, in the morning）\n\n地点介词：\n④ in + 大地点（城市、国家、省份）→ in Guangzhou\n\n解题：July 15th是具体某一天 → on；2011是年份 → in；Guangzhou是城市 → in\n\n口诀：at点on天in月年；in大on小at点。广州是大城市→in。"
+  },
+  {
+    "id": "e-053",
+    "subject": "english",
+    "topic": "english-can",
+    "difficulty": 3,
+    "question": "— Mom, ___ I go out to play now?\n— No, you ___. You ___ finish your homework first.",
+    "options": [
+      "A. can... can't... must",
+      "B. must... needn't... can",
+      "C. may... mustn't... can",
+      "D. can... can't... can"
+    ],
+    "answer": 0,
+    "explanation": "此题考查情态动词can/must/may在不同语境下的细微区别，是情态动词的综合应用题！\n\n分析每个空：\n第一空：孩子请求妈妈允许 → can或may都可以表示「可以吗？」\n第二空：妈妈不允许 → can't（不可以）\n第三空：妈妈提出要求，必须先完成作业 → must（必须）\n\n易混辨析：\n- can = 能/可以（能力+许可）\n- may = 可以（正式许可，语气更礼貌）\n- must = 必须（义务/命令）\n- mustn't = 禁止\n- needn't = 不必\n\n为什么B不对？must提问时否定才用needn't，但这里妈妈是直接说「不可以」，用can't即可。must finish表示「必须完成」，语气强烈。\n\n口诀：请求许可用can/may，禁止用can't/mustn't，必须用must！"
+  },
+  {
+    "id": "e-054",
+    "subject": "english",
+    "topic": "english-present-cont",
+    "difficulty": 3,
+    "question": "阅读短文，选择正确答案。\nIt's 7:30 in the evening. Tom's family are all at home. Mr. Green ___ a newspaper. Mrs. Green ___ dinner in the kitchen. Tom and his sister ___ their homework in the study.",
+    "options": [
+      "A. reads... cooks... do",
+      "B. is reading... is cooking... are doing",
+      "C. read... cook... are doing",
+      "D. is reading... cooks... do"
+    ],
+    "answer": 1,
+    "explanation": "此题考查现在进行时的语境判断——完形填空式的综合时态题！\n\n解题思路：\n开头\"It's 7:30 in the evening\"交代了具体时间背景，描述的是「此时此刻正在发生的事」→ 全部用现在进行时。\n\n逐空分析：\n- Mr. Green（第三人称单数）→ is reading\n- Mrs. Green（第三人称单数）→ is cooking\n- Tom and his sister（复数）→ are doing\n\n易错点：\n很多同学看到Tom是第三人称单数就会犹豫，但Tom and his sister是两个人在做同一件事 → 复数主语 → are doing。\n\n口诀：描述正在进行的画面，一镜到底用进行时！主语单复数决定be动词用is还是are。"
+  },
+  {
+    "id": "e-055",
+    "subject": "english",
+    "topic": "english-words",
+    "difficulty": 2,
+    "question": "I want to ___ some vegetables at the supermarket.",
+    "options": [
+      "A. buy",
+      "B. by",
+      "C. bye",
+      "D. bring"
+    ],
+    "answer": 0,
+    "explanation": "核心词汇辨析：\nbuy = 买；by = 通过/在……旁边；bye = 再见；bring = 带来。\n\nwant to do sth = 想要做某事，to后面跟动词原形。\n\n常见同音词混淆：buy / by / bye 发音都是 /baɪ/，但意思完全不同！\n\n记法：buy里的u像购物袋 → 买东西；by里的y像箭头 → 通过；bye有e → 告别时拖长音bye~"
+  },
+  {
+    "id": "e-056",
+    "subject": "english",
+    "topic": "english-words",
+    "difficulty": 2,
+    "question": "Which word means 「困难的」?",
+    "options": [
+      "A. easy",
+      "B. difficult",
+      "C. different",
+      "D. delicious"
+    ],
+    "answer": 1,
+    "explanation": "形容词辨析（易混词）：\neasy = 容易的；difficult = 困难的；different = 不同的；delicious = 美味的。\n\n易混点：difficult和different长得像，但意思完全不同！\ndifficult = dif + ficult（困难）\ndifferent = dif + ferent（不同）\n\n记法：difficult里有「cult」像「苦」→ 困难让人苦；different里有「rent」像「人特」→ 与众不同。"
+  },
+  {
+    "id": "e-057",
+    "subject": "english",
+    "topic": "english-words",
+    "difficulty": 2,
+    "question": "The opposite of 'hot' is ___.",
+    "options": [
+      "A. warm",
+      "B. cool",
+      "C. cold",
+      "D. wet"
+    ],
+    "answer": 2,
+    "explanation": "反义词辨析：\nhot（热）↔ cold（冷）——完全相反\nwarm（温暖）↔ cool（凉爽）——程度较轻的相反\nwet（湿）↔ dry（干）\n\n温度从高到低：hot > warm > cool > cold\n\n注意区分：warm和cool也是反义词，但题目问的是hot的反义词，hot的程度最强 → 对应cold。\n\n口诀：hot↔cold（极端），warm↔cool（温和）。"
+  },
+  {
+    "id": "e-058",
+    "subject": "english",
+    "topic": "english-be",
+    "difficulty": 2,
+    "question": "How much ___ these shoes?",
+    "options": [
+      "A. is",
+      "B. are",
+      "C. am",
+      "D. be"
+    ],
+    "answer": 1,
+    "explanation": "问价格句型：How much + be动词 + 主语？\n\n关键：be动词的单复数由主语决定！\nthese shoes（这些鞋子）→ 复数主语 → 用are。\n\n对比：\n- How much is this book?（这本书多少钱？→ 单数）\n- How much are these shoes?（这些鞋子多少钱？→ 复数）\n\n易错点：不要看到much就觉得用单数！much修饰的是钱（不可数），但be动词和主语保持一致。\n\n口诀：how much看主语，单is复are不迷糊。"
+  },
+  {
+    "id": "e-059",
+    "subject": "english",
+    "topic": "english-be",
+    "difficulty": 2,
+    "question": "Both my mother and I ___ interested in music.",
+    "options": [
+      "A. is",
+      "B. am",
+      "C. are",
+      "D. be"
+    ],
+    "answer": 2,
+    "explanation": "both...and...（……和……都）连接两个主语时，视为复数！\n\nmy mother and I = 两个人 → 复数 → 用are。\n\n易错点：有同学看到I就想用am，但both A and B = A和B加在一起 → 永远是复数。\n\n类似结构：\n- Both Tom and Jerry are funny.\n- Both she and her sister like music.\n\n口诀：both...and...连接两个，be动词永远用are！"
+  },
+  {
+    "id": "e-060",
+    "subject": "english",
+    "topic": "english-article",
+    "difficulty": 2,
+    "question": "He can play ___ violin, but he can't play ___ chess.",
+    "options": [
+      "A. the... the",
+      "B. /... /",
+      "C. the... /",
+      "D. /... the"
+    ],
+    "answer": 2,
+    "explanation": "冠词特殊规则：乐器前加the，棋类/球类不加冠词！\n\n规则总结：\n① 乐器前 + the：play the piano / play the violin / play the guitar\n② 球类零冠词：play basketball / play football / play tennis\n③ 棋类零冠词：play chess / play Chinese chess\n\n记法：乐器是「西洋乐器」，加个the显得洋气；球类和棋类是中国学生天天玩的，不用加the。\n\n口诀：西洋乐器the上场，球类棋类the下岗！"
+  },
+  {
+    "id": "e-061",
+    "subject": "english",
+    "topic": "english-article",
+    "difficulty": 2,
+    "question": "This is ___ useful dictionary. I use it every day.",
+    "options": [
+      "A. a",
+      "B. an",
+      "C. the",
+      "D. /"
+    ],
+    "answer": 0,
+    "explanation": "此题是a/an辨析的经典陷阱题！\n\nuseful开头字母u是元音字母，但发音是/juːsfl/，开头音素/j/是辅音 → 用a！\n\n同类词总结（u发/juː/，用a）：\n- a university（一所大学）\n- a useful book（一本有用的书）\n- a uniform（一套校服）\n- a European country（一个欧洲国家）\n\n对比（u发/ʌ/，用an）：\n- an umbrella（一把伞）\n- an uncle（一个叔叔）\n- an ugly duckling（一只丑小鸭）\n\n口诀：u发「优」用a，u发「啊」用an！看音不看形！"
+  },
+  {
+    "id": "e-062",
+    "subject": "english",
+    "topic": "english-pronoun",
+    "difficulty": 2,
+    "question": "Please help ___ to some fish, children.",
+    "options": [
+      "A. you",
+      "B. your",
+      "C. yourself",
+      "D. yourselves"
+    ],
+    "answer": 3,
+    "explanation": "此题考查反身代词的单复数 + 固定搭配！\n\nhelp oneself to sth = 随便吃/自取（食物）\n\n解题关键：children（孩子们）是复数 → 用yourselves。\n\n反身代词对照：\n- 单数：myself / yourself / himself / herself / itself\n- 复数：ourselves / yourselves / themselves\n\n如果是对一个人说 → help yourself\n如果是对多个人说 → help yourselves\n\n固定搭配总结：\n- help oneself to sth（自取）\n- enjoy oneself（玩得开心）\n- by oneself（独自）\n- teach oneself（自学）\n\n口诀：help oneself请自便，单yourself复yourselves。"
+  },
+  {
+    "id": "e-063",
+    "subject": "english",
+    "topic": "english-pronoun",
+    "difficulty": 2,
+    "question": "My bike is broken. Can I use ___?",
+    "options": [
+      "A. you",
+      "B. your",
+      "C. yours",
+      "D. yourself"
+    ],
+    "answer": 2,
+    "explanation": "此题考查名词性物主代词yours的用法！\n\n分析句子：use后面需要一个宾语，指的是「你的（自行车）」→ 后面没有名词bike → 用名词性物主代词yours。\n\nCan I use yours? = Can I use your bike?\nyours代替了your bike，避免重复。\n\n四选项辨析：\n- you（你，主格/宾格）→ 不能说Can I use you\n- your（你的，形容词性，后面必须跟名词）→ Can I use your bike ✓ / Can I use your ✗\n- yours（你的，名词性，独立使用）→ Can I use yours ✓\n- yourself（你自己，反身代词）→ 逻辑不通\n\n口诀：有名用形代，无名用名代。后面没名词，名代顶上！"
+  },
+  {
+    "id": "e-064",
+    "subject": "english",
+    "topic": "english-prep",
+    "difficulty": 2,
+    "question": "The hospital is ___ the post office and the bank.",
+    "options": [
+      "A. in",
+      "B. on",
+      "C. between",
+      "D. among"
+    ],
+    "answer": 2,
+    "explanation": "此题考查between和among的辨析！\n\nbetween = 在两者之间（between A and B）\namong = 在三者或三者以上之间\n\n题目：医院在邮局和银行之间 → 两个地点 → 用between。\n\n例句对比：\n- The cat is between the two chairs.（猫在两把椅子之间）\n- The teacher is among the students.（老师在学生中间，学生是很多人）\n\n口诀：between是两者间（and连两边），among是三者以上间。\n\n固定搭配：between...and...（在……和……之间）"
+  },
+  {
+    "id": "e-065",
+    "subject": "english",
+    "topic": "english-prep",
+    "difficulty": 2,
+    "question": "We will have a class meeting ___ the afternoon of Friday.",
+    "options": [
+      "A. in",
+      "B. on",
+      "C. at",
+      "D. for"
+    ],
+    "answer": 1,
+    "explanation": "此题是时间介词的陷阱题！\n\n规则：\n- in the afternoon（泛指下午）→ 用in\n- on Friday afternoon（具体某天下午）→ 用on\n- on the afternoon of Friday（具体到周五的下午）→ 用on\n\n核心规律：只要涉及具体某一天（或某一天的某个时段），就用on！\n\n对比：\n- in the afternoon ✓（泛指的下午）\n- on Friday afternoon ✓（具体周五下午）\n- on the afternoon of May 1st ✓（具体五月一日的下午）\n\n口诀：泛指时段用in，具体到天就用on。记住：有of + 具体日期/星期 → 用on！"
+  },
+  {
+    "id": "e-066",
+    "subject": "english",
+    "topic": "english-can",
+    "difficulty": 2,
+    "question": "— ___ I borrow your ruler?\n— Of course. Here you are.",
+    "options": [
+      "A. Must",
+      "B. Need",
+      "C. May",
+      "D. Do"
+    ],
+    "answer": 2,
+    "explanation": "此题考查请求许可时的情态动词选择！\n\n情景分析：向别人借东西，请求许可 → 用May或Can。\nMay比Can更正式、更有礼貌。\n\n情态动词表请求许可：\n- May I...?（我可以……吗？最礼貌）\n- Can I...?（我能……吗？口语常用）\n- Could I...?（我能……吗？更委婉）\n\n为什么不选其他：\n- Must I...? = 我必须……吗？（表示义务，不表示请求）\n- Need I...? = 我需要……吗？（询问必要性）\n- Do I...? = 我……吗？（一般疑问句，不表示情态）\n\n口诀：借东西问许可，May/Can最常用。May更礼貌，Can更日常。"
+  },
+  {
+    "id": "e-067",
+    "subject": "english",
+    "topic": "english-can",
+    "difficulty": 2,
+    "question": "You look tired. You ___ go to bed early tonight.",
+    "options": [
+      "A. can",
+      "B. must",
+      "C. should",
+      "D. may"
+    ],
+    "answer": 2,
+    "explanation": "此题考查情态动词should表建议的用法！\n\n语境：你看上去很累 → 建议你早点睡觉 → 用should（应该）。\n\n情态动词语气强弱：\n- must（必须）= 命令/强制，不照做不行\n- should（应该）= 建议/劝告，最好这样做\n- can（可以）= 允许/能力\n- may（可以）= 允许（更正式）\n\n这里妈妈或朋友在劝你，不是命令你 → should更合适。\n\n对比：\n- You must go to bed.（你必须睡觉——不睡不行！）\n- You should go to bed.（你应该睡觉——为你好，建议你这样做。）\n\n口诀：must是命令必须做，should是建议应该做。累了劝休息，should最贴心。"
+  },
+  {
+    "id": "e-068",
+    "subject": "english",
+    "topic": "english-present-cont",
+    "difficulty": 2,
+    "question": "— Where is your brother?\n— He ___ a model plane in his room.",
+    "options": [
+      "A. makes",
+      "B. make",
+      "C. is making",
+      "D. made"
+    ],
+    "answer": 2,
+    "explanation": "此题考查现在进行时的语境判断！\n\n分析：问句\"Where is your brother?\"（你弟弟在哪儿？）→ 问的是「此时此刻」的位置 → 答句也应该描述正在做的事 → 现在进行时。\n\n结构：He（第三人称单数）+ is + making（make的ing形式，去e加ing）。\n\n时间推断技巧：\n当问句是：\n- Where is/are...? → 大概率答句用进行时\n- What is/are...doing? → 100%用进行时\n\n动词ing变化规则：\nmake → making（去e加ing）\nrun → running（重读闭音节双写辅音）\nplay → playing（直接加ing）\n\n口诀：问人在哪儿，答在做什么→用进行时！"
+  },
+  {
+    "id": "e-069",
+    "subject": "english",
+    "topic": "english-phonetic",
+    "difficulty": 2,
+    "question": "找出划线部分发音与其他三个不同的单词。",
+    "options": [
+      "A. book",
+      "B. food",
+      "C. look",
+      "D. good"
+    ],
+    "answer": 1,
+    "explanation": "此题考查oo字母组合的两种常见发音！\n\noo组合有两种发音：\n① 短音/ʊ/：book, look, good, cook, foot（短而轻）\n② 长音/uː/：food, school, room, cool, moon（长而圆）\n\n分析：\n- book /bʊk/（短音）\n- food /fuːd/（长音）← 和其他三个不同！\n- look /lʊk/（短音）\n- good /ɡʊd/（短音）\n\n记忆技巧：大部分oo发长音/uː/，但book/look/good/cook/foot这五个词发短音/ʊ/。\n\n口诀：书本看，好厨师用脚——book, look, good, cook, foot（这五个oo发短音，其他的大多发长音）。"
+  },
+  {
+    "id": "e-070",
+    "subject": "english",
+    "topic": "english-phonetic",
+    "difficulty": 2,
+    "question": "下列单词中，哪个单词的重音位置与其他三个不同？",
+    "options": [
+      "A. about",
+      "B. today",
+      "C. apple",
+      "D. begin"
+    ],
+    "answer": 2,
+    "explanation": "此题考查单词重音位置的判断！\n\n重音分析：\n- about /əˈbaʊt/ → 重音在第二音节\n- today /təˈdeɪ/ → 重音在第二音节\n- apple /ˈæpl/ → 重音在第一音节 ← 与其他三个不同！\n- begin /bɪˈɡɪn/ → 重音在第二音节\n\n规律总结：\n- 双音节词的重音多数在第一个音节（如apple, sister, teacher）\n- 但以a-/be-/to-等前缀开头的双音节词，重音常在第二个音节（如about, begin, today, become）\n\n重音判断技巧：\n1. 试着把重音放在不同位置读一遍\n2. 听起来最自然的就是正确重音\n3. 多听多模仿是最佳方法\n\n口诀：a/be/to开头的双音节词，重音往往往后跑！"
+  }
+]
